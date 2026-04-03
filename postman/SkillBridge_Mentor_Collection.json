@@ -1,0 +1,427 @@
+{
+  "info": {
+    "_postman_id": "skillbridge-mentor-collection",
+    "name": "SkillBridge - MENTOR",
+    "description": "API endpoints for Mentor users (mentor@test.com)\n\nMentors can:\n- Manage their mentor profile\n- Create guided project opportunities\n- Endorse talent skills\n- View their endorsements",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. AUTH",
+      "item": [
+        {
+          "name": "GET My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get current user's base info and role flags"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. MENTOR PROFILE",
+      "item": [
+        {
+          "name": "GET My Mentor Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/mentors/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mentors",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get my mentor profile"
+          }
+        },
+        {
+          "name": "UPDATE My Mentor Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"headline\": \"Senior Software Architect | 15+ Years Experience\",\n  \"bio\": \"Passionate about mentoring the next generation of developers. Expertise in Python, Django, and system design.\",\n  \"expertise_area_ids\": [1, 4, 5],\n  \"linkedin_url\": \"https://linkedin.com/in/seniormentor\",\n  \"website_url\": \"https://mentor-portfolio.com\",\n  \"is_accepting_mentees\": true,\n  \"max_mentees\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mentors/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mentors",
+                "me",
+                ""
+              ]
+            },
+            "description": "Update mentor profile.\n\nExpertise Area IDs (Skills):\n1=Python, 2=JavaScript, 3=React, 4=Django, 5=PostgreSQL, 6=Node.js, 7=TypeScript, 8=AWS, 9=Docker, 10=ML"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. SKILL ENDORSEMENTS",
+      "item": [
+        {
+          "name": "ENDORSE Talent's Skill",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"talent_profile_id\": 1,\n  \"skill_id\": 1,\n  \"endorsement_note\": \"Excellent Python skills demonstrated during our guided project. Strong problem-solving abilities and clean code practices.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/mentors/me/endorsements/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mentors",
+                "me",
+                "endorsements",
+                ""
+              ]
+            },
+            "description": "Endorse a talent's skill.\n\nRequirements:\n- Talent must have the skill in their profile\n- Cannot endorse same skill twice\n- Must be a verified mentor"
+          }
+        },
+        {
+          "name": "LIST My Endorsements",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/mentors/me/endorsements/list/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "mentors",
+                "me",
+                "endorsements",
+                "list",
+                ""
+              ]
+            },
+            "description": "View all endorsements I have given"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. GUIDED PROJECTS (Opportunities)",
+      "item": [
+        {
+          "name": "LIST Opportunities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ]
+            },
+            "description": "List all opportunities"
+          }
+        },
+        {
+          "name": "CREATE Guided Project",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Build a REST API with Django - Guided Project\",\n  \"description\": \"Learn to build production-ready REST APIs with Django REST Framework. This guided project covers authentication, serializers, views, and deployment.\\n\\nWhat you'll learn:\\n- Django project structure\\n- DRF serializers and views\\n- JWT authentication\\n- API documentation\\n- Deployment to Railway/Render\",\n  \"opportunity_type\": \"guided_project\",\n  \"required_skill_ids\": [1],\n  \"experience_level\": \"Beginner to Intermediate\",\n  \"is_remote\": true,\n  \"location\": \"Online\",\n  \"is_paid\": false,\n  \"duration\": \"4 weeks\",\n  \"spots_available\": 10,\n  \"max_applicants\": 30,\n  \"application_deadline\": \"2026-04-30T23:59:59Z\",\n  \"start_date\": \"2026-05-01\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ]
+            },
+            "description": "Create a guided project opportunity.\n\nOpportunity types: internship, micro_project, guided_project, full_time"
+          }
+        },
+        {
+          "name": "GET Opportunity Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                ""
+              ]
+            },
+            "description": "View opportunity details"
+          }
+        },
+        {
+          "name": "UPDATE Opportunity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"spots_available\": 15,\n  \"description\": \"Updated description with more details...\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                ""
+              ]
+            },
+            "description": "Update guided project details"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. APPLICATION MANAGEMENT",
+      "item": [
+        {
+          "name": "LIST Applications for My Project",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/applications/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                "applications",
+                ""
+              ]
+            },
+            "description": "View all applications for your guided project"
+          }
+        },
+        {
+          "name": "UPDATE Application Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"accepted\",\n  \"reviewer_notes\": \"Welcome to the guided project! Looking forward to working with you.\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/applications/{{application_id}}/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "applications",
+                "{{application_id}}",
+                "status",
+                ""
+              ]
+            },
+            "description": "Accept or reject applications"
+          }
+        }
+      ]
+    },
+    {
+      "name": "0. HEALTH CHECK",
+      "item": [
+        {
+          "name": "Health Check (No Auth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_MENTOR_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "opportunity_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "application_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

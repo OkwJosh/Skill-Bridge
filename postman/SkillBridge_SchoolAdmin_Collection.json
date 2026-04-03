@@ -1,0 +1,322 @@
+{
+  "info": {
+    "_postman_id": "skillbridge-schooladmin-collection",
+    "name": "SkillBridge - SCHOOL ADMIN",
+    "description": "API endpoints for School Admin users (schooladmin@test.com)\n\nSchool Admins can:\n- View their school profile\n- Manage student roster\n- Add students to roster for verification",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. AUTH",
+      "item": [
+        {
+          "name": "GET My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get current user's base info and role flags"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. SCHOOL PROFILE",
+      "item": [
+        {
+          "name": "GET My School",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get my school's profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. STUDENT ROSTER MANAGEMENT",
+      "item": [
+        {
+          "name": "LIST Student Roster",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ]
+            },
+            "description": "List all students in the roster"
+          }
+        },
+        {
+          "name": "LIST Roster (Not Yet Consented)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/?has_consented=false",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "has_consented",
+                  "value": "false"
+                }
+              ]
+            },
+            "description": "List students who haven't yet consented to data sharing"
+          }
+        },
+        {
+          "name": "LIST Roster (Consented)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/?has_consented=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "has_consented",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "List students who have consented to data sharing"
+          }
+        },
+        {
+          "name": "ADD Student to Roster",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculation_number\": \"MAT2021001\",\n  \"email\": \"newstudent@unilag.edu.ng\",\n  \"full_name\": \"Adebayo Johnson\",\n  \"department\": \"Computer Science\",\n  \"course_of_study\": \"BSc Computer Science\",\n  \"enrollment_year\": 2021,\n  \"expected_graduation_year\": 2025,\n  \"graduation_year\": null,\n  \"is_graduated\": false,\n  \"cgpa\": 3.72\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ]
+            },
+            "description": "Add a new student to the roster for future verification"
+          }
+        },
+        {
+          "name": "ADD Student (Minimal Info)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculation_number\": \"MAT2022001\",\n  \"full_name\": \"Test Student\",\n  \"department\": \"Engineering\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ]
+            },
+            "description": "Add student with minimal required information"
+          }
+        },
+        {
+          "name": "ADD Graduated Student",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculation_number\": \"MAT2019001\",\n  \"email\": \"graduate@unilag.edu.ng\",\n  \"full_name\": \"Chidinma Okonkwo\",\n  \"department\": \"Computer Science\",\n  \"course_of_study\": \"BSc Computer Science\",\n  \"enrollment_year\": 2019,\n  \"expected_graduation_year\": 2023,\n  \"graduation_year\": 2023,\n  \"is_graduated\": true,\n  \"cgpa\": 4.12\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/me/roster/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "me",
+                "roster",
+                ""
+              ]
+            },
+            "description": "Add a graduated student to the roster"
+          }
+        }
+      ]
+    },
+    {
+      "name": "0. HEALTH CHECK",
+      "item": [
+        {
+          "name": "Health Check (No Auth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_SCHOOL_ADMIN_TOKEN_HERE",
+      "type": "string"
+    }
+  ]
+}

@@ -1,0 +1,506 @@
+{
+  "info": {
+    "_postman_id": "skillbridge-orgadmin-collection",
+    "name": "SkillBridge - ORG ADMIN",
+    "description": "API endpoints for Organization Admin users (orgadmin@test.com)\n\nOrg Admins can:\n- Manage organization profile\n- Search for talents (proactive sourcing)\n- Create opportunities\n- Review applications\n- Update application status",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. AUTH",
+      "item": [
+        {
+          "name": "GET My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get current user's base info and role flags"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. ORGANIZATION PROFILE",
+      "item": [
+        {
+          "name": "GET My Organization",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get my organization's profile"
+          }
+        },
+        {
+          "name": "UPDATE My Organization",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Acme Tech\",\n  \"description\": \"Leading fintech company in Nigeria building innovative payment solutions\",\n  \"logo_url\": \"https://storage.example.com/logo.png\",\n  \"website_url\": \"https://acmetech.com\",\n  \"industry_id\": 1,\n  \"company_size\": \"51-200\",\n  \"city\": \"Lagos\",\n  \"state\": \"Lagos State\",\n  \"country\": \"Nigeria\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "me",
+                ""
+              ]
+            },
+            "description": "Update organization details.\n\nIndustry IDs:\n1=Technology, 2=Finance, 3=Healthcare, 4=Education, 5=E-commerce, 6=Logistics, 7=Agriculture, 8=Energy"
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. TALENT SEARCH (Proactive Sourcing)",
+      "item": [
+        {
+          "name": "SEARCH All Talents",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/me/talent-search/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "me",
+                "talent-search",
+                ""
+              ]
+            },
+            "description": "List all available talents"
+          }
+        },
+        {
+          "name": "SEARCH Talents by Skills",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/me/talent-search/?skills=1,4",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "me",
+                "talent-search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "1,4",
+                  "description": "Filter by skill IDs (1=Python, 4=Django)"
+                }
+              ]
+            },
+            "description": "Search talents with specific skills\n\nSkill IDs:\n1=Python, 2=JavaScript, 3=React, 4=Django, 5=PostgreSQL, 6=Node.js, 7=TypeScript, 8=AWS, 9=Docker, 10=ML"
+          }
+        },
+        {
+          "name": "SEARCH Talents (All Filters)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/organizations/me/talent-search/?skills=1,4&education_route=university&is_school_verified=true&is_available=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "organizations",
+                "me",
+                "talent-search",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "skills",
+                  "value": "1,4"
+                },
+                {
+                  "key": "education_route",
+                  "value": "university",
+                  "description": "university, polytechnic, bootcamp, self_taught"
+                },
+                {
+                  "key": "is_school_verified",
+                  "value": "true"
+                },
+                {
+                  "key": "is_available",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Search talents with all filters combined"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. OPPORTUNITIES",
+      "item": [
+        {
+          "name": "LIST My Opportunities",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ]
+            },
+            "description": "List all opportunities"
+          }
+        },
+        {
+          "name": "CREATE Opportunity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Backend Developer Internship\",\n  \"description\": \"We are looking for talented Python/Django developers to join our team. You will work on building scalable APIs and backend services.\",\n  \"opportunity_type\": \"internship\",\n  \"required_skill_ids\": [1, 4, 5],\n  \"experience_level\": \"Entry-level\",\n  \"is_remote\": true,\n  \"location\": \"Lagos, Nigeria\",\n  \"is_paid\": true,\n  \"compensation\": \"₦150,000/month\",\n  \"duration\": \"3 months\",\n  \"spots_available\": 2,\n  \"max_applicants\": 50,\n  \"application_deadline\": \"2026-05-01T23:59:59Z\",\n  \"start_date\": \"2026-05-15\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ]
+            },
+            "description": "Create a new opportunity.\n\nOpportunity types: internship, micro_project, guided_project, full_time\n\nSkill IDs:\n1=Python, 2=JavaScript, 3=React, 4=Django, 5=PostgreSQL"
+          }
+        },
+        {
+          "name": "GET Opportunity Details",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                ""
+              ]
+            },
+            "description": "Get details of a specific opportunity"
+          }
+        },
+        {
+          "name": "UPDATE Opportunity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Senior Backend Developer Internship\",\n  \"status\": \"open\",\n  \"spots_available\": 3,\n  \"application_deadline\": \"2026-05-15T23:59:59Z\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                ""
+              ]
+            },
+            "description": "Update opportunity details (only owner can update)\n\nStatus: draft, open, closed, filled"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. APPLICATION MANAGEMENT",
+      "item": [
+        {
+          "name": "LIST Applications for Opportunity",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/applications/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                "applications",
+                ""
+              ]
+            },
+            "description": "List all applications for an opportunity you own"
+          }
+        },
+        {
+          "name": "LIST Applications (Filtered by Status)",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/applications/?status=pending",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                "applications",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "status",
+                  "value": "pending",
+                  "description": "pending, reviewed, shortlisted, accepted, rejected"
+                }
+              ]
+            },
+            "description": "Filter applications by status"
+          }
+        },
+        {
+          "name": "UPDATE Application Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"shortlisted\",\n  \"reviewer_notes\": \"Strong Python skills, proceed to technical interview\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/applications/{{application_id}}/status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "applications",
+                "{{application_id}}",
+                "status",
+                ""
+              ]
+            },
+            "description": "Update application status.\n\nStatuses: pending, reviewed, shortlisted, accepted, rejected, withdrawn"
+          }
+        }
+      ]
+    },
+    {
+      "name": "0. HEALTH CHECK",
+      "item": [
+        {
+          "name": "Health Check (No Auth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_ORG_ADMIN_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "opportunity_id",
+      "value": "1",
+      "type": "string"
+    },
+    {
+      "key": "application_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}

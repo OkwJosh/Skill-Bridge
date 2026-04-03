@@ -1,0 +1,513 @@
+{
+  "info": {
+    "_postman_id": "skillbridge-talent-collection",
+    "name": "SkillBridge - TALENT",
+    "description": "API endpoints for Talent users (talent@test.com)\n\nTalents can:\n- Manage their profile\n- Add/remove skills\n- Browse opportunities\n- Apply to opportunities\n- Track applications\n- Consent to school verification",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. AUTH",
+      "item": [
+        {
+          "name": "GET My Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get current user's base info and role flags"
+          }
+        },
+        {
+          "name": "UPDATE My Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"John Developer\",\n  \"phone_number\": \"+2348012345678\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/auth/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "auth",
+                "me",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. TALENT PROFILE",
+      "item": [
+        {
+          "name": "GET My Talent Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/talents/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "talents",
+                "me",
+                ""
+              ]
+            },
+            "description": "Get my talent profile with skills"
+          }
+        },
+        {
+          "name": "UPDATE My Talent Profile",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"headline\": \"Full Stack Developer | React & Django\",\n  \"bio\": \"Passionate about building great products with 3 years of experience\",\n  \"education_route\": \"university\",\n  \"institution_name\": \"University of Lagos\",\n  \"field_of_study\": \"Computer Science\",\n  \"graduation_year\": 2023,\n  \"city\": \"Lagos\",\n  \"state\": \"Lagos State\",\n  \"country\": \"Nigeria\",\n  \"portfolio_url\": \"https://portfolio.com\",\n  \"linkedin_url\": \"https://linkedin.com/in/johndoe\",\n  \"github_url\": \"https://github.com/johndoe\",\n  \"is_available\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/talents/me/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "talents",
+                "me",
+                ""
+              ]
+            },
+            "description": "Update my headline, bio, education, location, etc."
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. SKILLS MANAGEMENT",
+      "item": [
+        {
+          "name": "ADD Skill to Profile",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"skill_id\": 1,\n  \"proficiency\": \"advanced\",\n  \"years_experience\": 3,\n  \"is_primary\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/talents/me/skills/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "talents",
+                "me",
+                "skills",
+                ""
+              ]
+            },
+            "description": "Add a skill to my profile.\n\nSkill IDs:\n1=Python, 2=JavaScript, 3=React, 4=Django, 5=PostgreSQL, 6=Node.js, 7=TypeScript, 8=AWS, 9=Docker, 10=Machine Learning\n\nProficiency: beginner, intermediate, advanced, expert"
+          }
+        },
+        {
+          "name": "UPDATE Skill Details",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"proficiency\": \"expert\",\n  \"years_experience\": 5,\n  \"is_primary\": true\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/talents/me/skills/1/update/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "talents",
+                "me",
+                "skills",
+                "1",
+                "update",
+                ""
+              ]
+            },
+            "description": "Update proficiency/experience for a skill I have"
+          }
+        },
+        {
+          "name": "REMOVE Skill from Profile",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/talents/me/skills/1/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "talents",
+                "me",
+                "skills",
+                "1",
+                ""
+              ]
+            },
+            "description": "Remove a skill from my profile"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. BROWSE OPPORTUNITIES",
+      "item": [
+        {
+          "name": "LIST All Opportunities (Public)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ]
+            },
+            "description": "Browse all available opportunities (no auth needed)"
+          }
+        },
+        {
+          "name": "SEARCH Opportunities",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/?search=python&opportunity_type=internship&is_remote=true",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                ""
+              ],
+              "query": [
+                {
+                  "key": "search",
+                  "value": "python"
+                },
+                {
+                  "key": "opportunity_type",
+                  "value": "internship"
+                },
+                {
+                  "key": "is_remote",
+                  "value": "true"
+                }
+              ]
+            },
+            "description": "Search opportunities with filters"
+          }
+        },
+        {
+          "name": "GET Opportunity Details",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                ""
+              ]
+            },
+            "description": "View details of a specific opportunity"
+          }
+        }
+      ]
+    },
+    {
+      "name": "5. APPLICATIONS",
+      "item": [
+        {
+          "name": "APPLY to Opportunity",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"cover_letter\": \"I am very interested in this opportunity. I have relevant experience and am eager to contribute to your team.\",\n  \"resume_url\": \"https://storage.example.com/my-resume.pdf\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/{{opportunity_id}}/apply/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "{{opportunity_id}}",
+                "apply",
+                ""
+              ]
+            },
+            "description": "Apply to an opportunity. Cannot apply twice to same opportunity."
+          }
+        },
+        {
+          "name": "LIST My Applications",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/opportunities/my-applications/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "opportunities",
+                "my-applications",
+                ""
+              ]
+            },
+            "description": "View all my submitted applications and their status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "6. SCHOOL VERIFICATION",
+      "item": [
+        {
+          "name": "CONSENT to School Data",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"matriculation_number\": \"MAT2020001\",\n  \"school_id\": 1\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/consent/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "consent",
+                ""
+              ]
+            },
+            "description": "Consent to share school data for verification. This will set is_school_verified=True on your profile if your matric number is found."
+          }
+        },
+        {
+          "name": "CHECK Verification Status",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/v1/schools/verification-status/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "schools",
+                "verification-status",
+                ""
+              ]
+            },
+            "description": "Check my school verification status"
+          }
+        }
+      ]
+    },
+    {
+      "name": "0. HEALTH CHECK",
+      "item": [
+        {
+          "name": "Health Check (No Auth)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/v1/health/",
+              "host": [
+                "{{base_url}}"
+              ],
+              "path": [
+                "api",
+                "v1",
+                "health",
+                ""
+              ]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://127.0.0.1:8000",
+      "type": "string"
+    },
+    {
+      "key": "token",
+      "value": "YOUR_TALENT_TOKEN_HERE",
+      "type": "string"
+    },
+    {
+      "key": "opportunity_id",
+      "value": "1",
+      "type": "string"
+    }
+  ]
+}
