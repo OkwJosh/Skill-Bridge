@@ -1,0 +1,45 @@
+SKILLBRIDGE - CURRENT ACCESS TOKENS
+Generated at: 2026-04-03 17:36:07.197376
+Password: testpass123
+============================================================
+
+[Talent]
+Email: talent@test.com
+Access Token:
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjgyY2NlYjVmLWViMGQtNDNjYi1hNWNjLThkOWJiNWIxYTFjNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Fic3dhaHJuZnFkeXFtcHlscGx1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiJkNzg5YjFjYi1jNWE0LTQ0ZmQtYWI1MS00ZmEyZWE4MGI5Y2YiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc1MjM3NzYyLCJpYXQiOjE3NzUyMzQxNjIsImVtYWlsIjoidGFsZW50QHRlc3QuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6dHJ1ZX0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NzUyMzQxNjJ9XSwic2Vzc2lvbl9pZCI6IjdmNTlmYThhLTQ3NDYtNDFiYi1hZDYxLWRjM2RiZGE0OGQyNyIsImlzX2Fub255bW91cyI6ZmFsc2V9.WjCQzMk9Lz-9woaRdWXHg_VwY-EfjNwapIZoJcO2KT20_SyYxuVC3WQ-bQxfyGMFF4YcU84M3ntpUjqkPtSRrQ
+Refresh Token:
+tbdti3y7nzar
+------------------------------------------------------------
+
+[OrgAdmin]
+Email: orgadmin@test.com
+Access Token:
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjgyY2NlYjVmLWViMGQtNDNjYi1hNWNjLThkOWJiNWIxYTFjNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Fic3dhaHJuZnFkeXFtcHlscGx1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxYzYyMThhYy01Y2RjLTRiNjktOGJjZi0zODI3MzAzMmJlNmIiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc1MjM3NzYzLCJpYXQiOjE3NzUyMzQxNjMsImVtYWlsIjoib3JnYWRtaW5AdGVzdC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc3NTIzNDE2M31dLCJzZXNzaW9uX2lkIjoiODY2OGM2M2UtYmFlYS00ZjZkLWE5MjYtMTk5ZjI1NDZlYzBkIiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.kC23Gsn29TDXeF5mRKN3GVbbzE_xu_Q6dkAK283_rociljeuTowxbDjlAvn-jj4luqB9SD1nC88I9XIk-qpycg
+Refresh Token:
+t7fmm47mvvve
+------------------------------------------------------------
+
+[Mentor]
+Email: mentor@test.com
+Access Token:
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjgyY2NlYjVmLWViMGQtNDNjYi1hNWNjLThkOWJiNWIxYTFjNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Fic3dhaHJuZnFkeXFtcHlscGx1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiI0Yjc5OTIyNC1jMTE5LTQ0MmEtYmMxNi1mZWUwM2RmMjQzMWQiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc1MjM3NzY0LCJpYXQiOjE3NzUyMzQxNjQsImVtYWlsIjoibWVudG9yQHRlc3QuY29tIiwicGhvbmUiOiIiLCJhcHBfbWV0YWRhdGEiOnsicHJvdmlkZXIiOiJlbWFpbCIsInByb3ZpZGVycyI6WyJlbWFpbCJdfSwidXNlcl9tZXRhZGF0YSI6eyJlbWFpbF92ZXJpZmllZCI6dHJ1ZX0sInJvbGUiOiJhdXRoZW50aWNhdGVkIiwiYWFsIjoiYWFsMSIsImFtciI6W3sibWV0aG9kIjoicGFzc3dvcmQiLCJ0aW1lc3RhbXAiOjE3NzUyMzQxNjR9XSwic2Vzc2lvbl9pZCI6IjNjMGEzNDFiLWQzODgtNDM5My1hMmM5LTcxN2VlODY4ZWI3ZSIsImlzX2Fub255bW91cyI6ZmFsc2V9.MN3PkrOylLu1dvGhJ7mAzSSpQP2W-E2fMtqhNOa5vPlWxJqn16ZyYihnNVnNBotEcLiLfZUr9RdhTNT3CDtn2w
+Refresh Token:
+sa5ndztfvecg
+------------------------------------------------------------
+
+[SchoolAdmin]
+Email: schooladmin@test.com
+Access Token:
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjgyY2NlYjVmLWViMGQtNDNjYi1hNWNjLThkOWJiNWIxYTFjNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Fic3dhaHJuZnFkeXFtcHlscGx1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIxMzRjODU4Yi0wMzJkLTQ0NDMtYTUyOS00OGExY2M5MzZjMDUiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc1MjM3NzY2LCJpYXQiOjE3NzUyMzQxNjYsImVtYWlsIjoic2Nob29sYWRtaW5AdGVzdC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc3NTIzNDE2Nn1dLCJzZXNzaW9uX2lkIjoiZjlkM2NiZWYtYzY5NC00NTMxLWJkOWEtNTkzM2JjOTMwY2Y5IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.LtUG5XWVRdDldseA3wFzhTWOfil8Of3PmqoQ9HlDl-awxQcUGFxxmnRdq18Uocs29B3ohkzatjhUfsM1o4C7OQ
+Refresh Token:
+jtou75c6f43o
+------------------------------------------------------------
+
+[Multi]
+Email: multi@test.com
+Access Token:
+eyJhbGciOiJFUzI1NiIsImtpZCI6IjgyY2NlYjVmLWViMGQtNDNjYi1hNWNjLThkOWJiNWIxYTFjNCIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2Fic3dhaHJuZnFkeXFtcHlscGx1LnN1cGFiYXNlLmNvL2F1dGgvdjEiLCJzdWIiOiIwNWVkZjZmMS0wZGU4LTQ0OGItOWY2Zi1jNDIyMTQ5MGVhMGUiLCJhdWQiOiJhdXRoZW50aWNhdGVkIiwiZXhwIjoxNzc1MjM3NzY3LCJpYXQiOjE3NzUyMzQxNjcsImVtYWlsIjoibXVsdGlAdGVzdC5jb20iLCJwaG9uZSI6IiIsImFwcF9tZXRhZGF0YSI6eyJwcm92aWRlciI6ImVtYWlsIiwicHJvdmlkZXJzIjpbImVtYWlsIl19LCJ1c2VyX21ldGFkYXRhIjp7ImVtYWlsX3ZlcmlmaWVkIjp0cnVlfSwicm9sZSI6ImF1dGhlbnRpY2F0ZWQiLCJhYWwiOiJhYWwxIiwiYW1yIjpbeyJtZXRob2QiOiJwYXNzd29yZCIsInRpbWVzdGFtcCI6MTc3NTIzNDE2N31dLCJzZXNzaW9uX2lkIjoiZjVlY2JjMWUtZmI1ZS00MjE3LTg0NDMtZDA4NTU1ODMzZGM4IiwiaXNfYW5vbnltb3VzIjpmYWxzZX0.g-3Y_80ax5eYf3LzP3y9GKOmEFuVwcZDz6RgtQIOGlPK9xBkKemUU27T_lfNmr8cx05xLOAv07TAcsPYrx1SWg
+Refresh Token:
+xwj2x3ghyt5t
+------------------------------------------------------------
+

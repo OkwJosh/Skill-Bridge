@@ -21,15 +21,15 @@ SUPABASE_URL = os.getenv("SUPABASE_URL")
 SUPABASE_ANON_KEY = os.getenv("SUPABASE_ANON_KEY")
 
 # Common password for all test accounts
-COMMON_PASSWORD = "TestPassword123!"
+COMMON_PASSWORD = "testpass123"
 
 # Test user accounts
 TEST_USERS = {
-    "Talent": "talent@skillbridge.com",
-    "OrgAdmin": "orgadmin@skillbridge.com",
-    "Mentor": "mentor@skillbridge.com",
-    "SchoolAdmin": "schooladmin@skillbridge.com",
-    "Multi": "multi@skillbridge.com"
+    "Talent": "talent@test.com",
+    "OrgAdmin": "orgadmin@test.com",
+    "Mentor": "mentor@test.com",
+    "SchoolAdmin": "schooladmin@test.com",
+    "Multi": "multi@test.com"
 }
 
 

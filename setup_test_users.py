@@ -106,8 +106,11 @@ def create_test_organization():
         defaults={
             'name': 'Acme Tech Solutions',
             'description': 'A leading tech company in Nigeria',
-            'website': 'https://acmetech.com.ng',
-            'location': 'Lagos, Nigeria',
+            'website_url': 'https://acmetech.com.ng',
+            'city': 'Lagos',
+            'state': 'Lagos',
+            'country': 'Nigeria',
+            'company_size': '11-50',
             'is_verified': True
         }
     )
@@ -122,9 +125,10 @@ def create_test_school():
         slug='unilag',
         defaults={
             'name': 'University of Lagos',
-            'short_name': 'UNILAG',
-            'email_domain': 'unilag.edu.ng',
-            'location': 'Akoka, Lagos',
+            'website_url': 'https://unilag.edu.ng',
+            'city': 'Akoka',
+            'state': 'Lagos',
+            'country': 'Nigeria',
             'school_type': 'university',
             'is_verified': True
         }
@@ -189,8 +193,10 @@ def create_talent_profile(user: User):
             'headline': 'Full Stack Developer | Python & React',
             'bio': 'Passionate developer looking for opportunities to grow.',
             'education_route': 'university',
-            'is_open_to_opportunities': True,
-            'years_of_experience': 2
+            'is_available': True,
+            'city': 'Lagos',
+            'state': 'Lagos',
+            'country': 'Nigeria'
         }
     )
     return profile, created
@@ -203,9 +209,8 @@ def create_mentor_profile(user: User):
         defaults={
             'headline': 'Senior Software Architect | Tech Mentor',
             'bio': '15+ years of experience in software development.',
-            'expertise_areas': 'Python, Django, System Design, Career Development',
-            'years_of_experience': 15,
-            'is_accepting_mentees': True
+            'is_accepting_mentees': True,
+            'max_mentees': 5
         }
     )
     return profile, created
@@ -217,8 +222,7 @@ def create_org_membership(user: User, org: Organization):
         user=user,
         organization=org,
         defaults={
-            'role': 'admin',
-            'is_primary_contact': True
+            'role': 'admin'
         }
     )
     return membership, created
@@ -226,8 +230,8 @@ def create_org_membership(user: User, org: Organization):
 
 def link_school_admin(user: User, school: School):
     """Link school admin user to a school."""
-    # Store school reference (you might need to adjust based on actual School model)
-    # For now, we just ensure the user has the school_admin flag
+    # Add user to school's admins M2M
+    school.admins.add(user)
     user.is_school_admin = True
     user.save()
     print(f"   ✅ Linked as admin of {school.name}")
