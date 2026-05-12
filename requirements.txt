@@ -2,7 +2,7 @@
 # SkillBridge - Production Dependencies
 # =============================================================================
 # Django Backend for Multi-Sided Opportunity Marketplace
-# Database: Supabase PostgreSQL | Storage: Supabase S3 | Auth: Supabase JWT
+# Database: Supabase PostgreSQL | Storage: Supabase S3 | Auth: Simple JWT
 # =============================================================================
 
 # -----------------------------------------------------------------------------
@@ -10,6 +10,7 @@
 # -----------------------------------------------------------------------------
 Django>=5.0,<6.0
 djangorestframework>=3.14,<4.0
+django-rest-framework-simplejwt>=5.3,<6.0  # JWT authentication for DRF
 
 # -----------------------------------------------------------------------------
 # Database - Supabase PostgreSQL
@@ -18,10 +19,10 @@ psycopg2-binary>=2.9,<3.0      # PostgreSQL adapter
 dj-database-url>=2.1,<3.0       # Parse SUPABASE_DB_URL connection string
 
 # -----------------------------------------------------------------------------
-# Authentication - Supabase JWT Verification
+# Authentication - Simple JWT Token Generation & Verification
 # -----------------------------------------------------------------------------
-PyJWT>=2.8,<3.0                 # Decode & verify Supabase Auth JWTs
-cryptography>=42.0,<43.0        # Required for RS256/HS256 JWT algorithms
+PyJWT>=2.8,<3.0                 # Encode & decode JWT tokens
+cryptography>=42.0,<43.0        # Required for JWT algorithms
 
 # -----------------------------------------------------------------------------
 # Storage - Supabase S3-Compatible Storage

@@ -2,7 +2,7 @@
 User Views for SkillBridge API
 ==============================
 
-Authentication and user profile endpoints.
+Authentication and user profile endpoints using Simple JWT.
 All responses automatically wrapped in standard JSON envelope.
 """
 
@@ -10,17 +10,17 @@ from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import api_view, permission_classes
+from django.contrib.auth import authenticate
+from rest_framework_simplejwt.tokens import RefreshToken
 
+from .models import User
 from .serializers import (
     UserMeSerializer, 
     UserUpdateSerializer,
     SignUpSerializer,
-    SignInSerializer,
-    PasswordResetRequestSerializer,
-    PasswordResetConfirmSerializer,
-    TokenRefreshSerializer
+    SignInSerializer
 )
-from .services import SupabaseAuthService, SupabaseAuthError
 
 
 class SignUpView(APIView):
@@ -28,7 +28,7 @@ class SignUpView(APIView):
     POST /api/v1/auth/signup
     
     Register a new user with email and password.
-    Creates user in both Supabase Auth and Django.
+    Creates user in Django and returns JWT tokens.
     
     Request Body:
     {
@@ -44,8 +44,7 @@ class SignUpView(APIView):
         "data": {
             "user": {...},
             "access_token": "...",
-            "refresh_token": "...",
-            "expires_in": 3600
+            "refresh_token": "..."
         }
     }
     """
@@ -56,35 +55,39 @@ class SignUpView(APIView):
         serializer = SignUpSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        try:
-            auth_service = SupabaseAuthService()
-            user, tokens = auth_service.sign_up(
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password'],
-                full_name=serializer.validated_data.get('full_name', ''),
-                role=serializer.validated_data.get('role', 'talent'),
-                phone_number=serializer.validated_data.get('phone_number', ''),
-                auto_confirm=True  # Skip email confirmation for testing
-            )
-            
-            return Response({
-                "user": UserMeSerializer(user).data,
-                "access_token": tokens.get('access_token'),
-                "refresh_token": tokens.get('refresh_token'),
-                "expires_in": tokens.get('expires_in'),
-                "token_type": tokens.get('token_type', 'bearer')
-            }, status=status.HTTP_201_CREATED)
-            
-        except SupabaseAuthError as e:
-            return Response(
-                {"detail": e.message, "error_code": e.error_code},
-                status=e.status_code
-            )
+        # Create user
+        user = User.objects.create_user(
+            email=serializer.validated_data['email'],
+            password=serializer.validated_data['password'],
+            username=serializer.validated_data['email'],
+            full_name=serializer.validated_data.get('full_name', ''),
+        )
+        
+        # Set role
+        role = serializer.validated_data.get('role', 'talent')
+        if role == 'talent':
+            user.is_talent = True
+        elif role == 'org_admin':
+            user.is_org_admin = True
+        elif role == 'mentor':
+            user.is_mentor = True
+        elif role == 'school_admin':
+            user.is_school_admin = True
+        user.save()
+        
+        # Generate tokens
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            "user": UserMeSerializer(user).data,
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+        }, status=status.HTTP_201_CREATED)
 
 
 class SignInView(APIView):
     """
-    POST /api/v1/auth/signin
+    POST /api/v1/auth/signin (or /api/v1/auth/login)
     
     Authenticate user with email and password.
     Returns JWT tokens for API access.
@@ -101,8 +104,7 @@ class SignInView(APIView):
         "data": {
             "user": {...},
             "access_token": "...",
-            "refresh_token": "...",
-            "expires_in": 3600
+            "refresh_token": "..."
         }
     }
     """
@@ -113,46 +115,34 @@ class SignInView(APIView):
         serializer = SignInSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        try:
-            auth_service = SupabaseAuthService()
-            user, tokens = auth_service.sign_in(
-                email=serializer.validated_data['email'],
-                password=serializer.validated_data['password']
-            )
-            
-            return Response({
-                "user": UserMeSerializer(user).data,
-                "access_token": tokens.get('access_token'),
-                "refresh_token": tokens.get('refresh_token'),
-                "expires_in": tokens.get('expires_in'),
-                "token_type": tokens.get('token_type', 'bearer')
-            })
-            
-        except SupabaseAuthError as e:
-            return Response(
-                {"detail": e.message, "error_code": e.error_code},
-                status=e.status_code
-            )
-
-
-class SignOutView(APIView):
-    """
-    POST /api/v1/auth/signout
-    
-    Sign out the current user and invalidate their tokens.
-    """
-    
-    permission_classes = [IsAuthenticated]
-    
-    def post(self, request):
-        # Get the access token from the request
-        auth_header = request.headers.get('Authorization', '')
-        if auth_header.startswith('Bearer '):
-            access_token = auth_header.split(' ')[1]
-            auth_service = SupabaseAuthService()
-            auth_service.sign_out(access_token)
+        email = serializer.validated_data['email']
+        password = serializer.validated_data['password']
         
-        return Response({"message": "Successfully signed out"})
+        # Authenticate using email (not username)
+        try:
+            user = User.objects.get(email__iexact=email)
+        except User.DoesNotExist:
+            return Response(
+                {"detail": "Invalid email or password"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Verify password
+        if not user.check_password(password):
+            return Response(
+                {"detail": "Invalid email or password"},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+        
+        # Generate tokens
+        refresh = RefreshToken.for_user(user)
+        
+        return Response({
+            "user": UserMeSerializer(user).data,
+            "access_token": str(refresh.access_token),
+            "refresh_token": str(refresh),
+        })
+
 
 
 class TokenRefreshView(APIView):
@@ -163,16 +153,14 @@ class TokenRefreshView(APIView):
     
     Request Body:
     {
-        "refresh_token": "..."
+        "refresh": "..."
     }
     
     Response:
     {
         "status": "success",
         "data": {
-            "access_token": "...",
-            "refresh_token": "...",
-            "expires_in": 3600
+            "access": "..."
         }
     }
     """
@@ -180,112 +168,13 @@ class TokenRefreshView(APIView):
     permission_classes = [AllowAny]
     
     def post(self, request):
-        serializer = TokenRefreshSerializer(data=request.data)
+        from rest_framework_simplejwt.serializers import TokenRefreshSerializer as JWTRefreshSerializer
+        
+        serializer = JWTRefreshSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         
-        try:
-            auth_service = SupabaseAuthService()
-            tokens = auth_service.refresh_token(
-                refresh_token=serializer.validated_data['refresh_token']
-            )
-            
-            return Response(tokens)
-            
-        except SupabaseAuthError as e:
-            return Response(
-                {"detail": e.message, "error_code": e.error_code},
-                status=e.status_code
-            )
+        return Response(serializer.validated_data)
 
-
-class PasswordResetRequestView(APIView):
-    """
-    POST /api/v1/auth/password/reset
-    
-    Request a password reset email.
-    
-    Request Body:
-    {
-        "email": "user@example.com"
-    }
-    
-    Response:
-    {
-        "status": "success",
-        "data": {
-            "message": "Password reset email sent"
-        }
-    }
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-        serializer = PasswordResetRequestSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        try:
-            auth_service = SupabaseAuthService()
-            auth_service.reset_password_request(
-                email=serializer.validated_data['email'],
-                redirect_url=serializer.validated_data.get('redirect_url')
-            )
-            
-            return Response({
-                "message": "If an account with this email exists, a password reset link has been sent."
-            })
-            
-        except SupabaseAuthError as e:
-            # Don't reveal if email exists or not
-            return Response({
-                "message": "If an account with this email exists, a password reset link has been sent."
-            })
-
-
-class PasswordResetConfirmView(APIView):
-    """
-    POST /api/v1/auth/password/confirm
-    
-    Set a new password after clicking the reset link.
-    The access_token is obtained from the reset link's URL fragment.
-    
-    Request Body:
-    {
-        "access_token": "...",  // From reset link
-        "new_password": "newsecurepassword123"
-    }
-    
-    Response:
-    {
-        "status": "success",
-        "data": {
-            "message": "Password updated successfully"
-        }
-    }
-    """
-    
-    permission_classes = [AllowAny]
-    
-    def post(self, request):
-        serializer = PasswordResetConfirmSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        
-        try:
-            auth_service = SupabaseAuthService()
-            auth_service.update_password(
-                access_token=serializer.validated_data['access_token'],
-                new_password=serializer.validated_data['new_password']
-            )
-            
-            return Response({
-                "message": "Password updated successfully"
-            })
-            
-        except SupabaseAuthError as e:
-            return Response(
-                {"detail": e.message, "error_code": e.error_code},
-                status=e.status_code
-            )
 
 
 class MeView(APIView):

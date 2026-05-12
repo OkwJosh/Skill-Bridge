@@ -149,7 +149,7 @@ class SignUpSerializer(serializers.Serializer):
 
 class SignInSerializer(serializers.Serializer):
     """
-    Serializer for POST /api/v1/auth/signin
+    Serializer for POST /api/v1/auth/signin or /api/v1/auth/login
     
     Validates login credentials.
     """
@@ -163,49 +163,3 @@ class SignInSerializer(serializers.Serializer):
     
     def validate_email(self, value):
         return value.lower()
-
-
-class TokenRefreshSerializer(serializers.Serializer):
-    """
-    Serializer for POST /api/v1/auth/refresh
-    
-    Validates refresh token request.
-    """
-    
-    refresh_token = serializers.CharField(required=True)
-
-
-class PasswordResetRequestSerializer(serializers.Serializer):
-    """
-    Serializer for POST /api/v1/auth/password/reset
-    
-    Validates password reset request.
-    """
-    
-    email = serializers.EmailField(required=True)
-    redirect_url = serializers.URLField(required=False, allow_blank=True)
-    
-    def validate_email(self, value):
-        return value.lower()
-
-
-class PasswordResetConfirmSerializer(serializers.Serializer):
-    """
-    Serializer for POST /api/v1/auth/password/confirm
-    
-    Validates new password after reset.
-    """
-    
-    access_token = serializers.CharField(required=True)
-    new_password = serializers.CharField(
-        required=True,
-        min_length=6,
-        write_only=True,
-        style={'input_type': 'password'}
-    )
-    
-    def validate_new_password(self, value):
-        """Ensure password meets minimum requirements."""
-        if len(value) < 6:
-            raise serializers.ValidationError("Password must be at least 6 characters.")
-        return value
