@@ -1,6 +1,7 @@
 import { Heart } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { formatSalary } from '../data';
+const displayPay = (job) => job.compensationLabel || (job.salaryMin ? formatSalary(job.salaryMin, job.salaryMax) : 'See details');
 import { useState } from 'react';
 
 // ─── Company Logo ─────────────────────────────────────────────────
@@ -19,44 +20,6 @@ export function CompanyLogo({ companyKey, size = 40 }) {
       style={{ width: size, height: size, background: color, fontSize: size * 0.4 }}
     >
       {letter}
-    </div>
-  );
-}
-
-export function Avatar({ src, alt = "avatar", name = "", size = 48 }) {
-  const initials = name
-    ? name
-        .split(" ")
-        .map((word) => word[0])
-        .join("")
-        .slice(0, 2)
-        .toUpperCase()
-    : "?";
-
-  return (
-    <div
-      style={{
-        width: size,
-        height: size,
-        borderRadius: "50%",
-        overflow: "hidden",
-        backgroundColor: "#ddd",
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontWeight: "bold",
-        color: "#555",
-      }}
-    >
-      {src ? (
-        <img
-          src={src}
-          alt={alt}
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-        />
-      ) : (
-        initials
-      )}
     </div>
   );
 }
@@ -88,7 +51,7 @@ export function JobCardSmall({ job }) {
       </div>
       <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>{job.title}</p>
       <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>{job.type} · {job.mode}</p>
-      <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{formatSalary(job.salaryMin, job.salaryMax)}</p>
+      <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{displayPay(job)}</p>
     </div>
   );
 }
@@ -125,7 +88,7 @@ export function JobCardWide({ job }) {
       </div>
       <div className="flex justify-between items-center mt-3">
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Deadline: {job.deadline}</p>
-        <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{formatSalary(job.salaryMin, job.salaryMax)}</p>
+        <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{displayPay(job)}</p>
       </div>
     </div>
   );
@@ -268,6 +231,19 @@ export function PageHeader({ title, onBack, rightSlot }) {
         <h1 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</h1>
       </div>
       {rightSlot}
+    </div>
+  );
+}
+
+// ─── Avatar ──────────────────────────────────────────────────────
+export function Avatar({ name, size = 40, className = '' }) {
+  const initials = name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+  return (
+    <div
+      className={`rounded-full flex items-center justify-center shrink-0 font-medium ${className}`}
+      style={{ width: size, height: size, background: '#D1D5DB', color: '#374151', fontSize: size * 0.35 }}
+    >
+      {initials}
     </div>
   );
 }

@@ -1,43 +1,65 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
-import { jobs, categories } from '../data';
-import { JobCardWide, Badge } from '../components/UI';
+import { useApi } from '../hooks/useApi';
+import { getOpportunities } from '../api/opportunities';
+import { JobCardWide } from '../components/UI';
+
+const opportunityTypes = ['internship', 'micro_project', 'guided_project'];
+const typeLabels = { internship: 'Internship', micro_project: 'Micro Project', guided_project: 'Guided Project' };
+const allCategories = ['All', 'Remote', 'Paid', 'Internship', 'Micro Project', 'Guided Project'];
+
+function adaptJob(op) {
+  return {
+    id: op.id,
+    title: op.title,
+    company: op.organization?.name || 'SkillBridge',
+    companyKey: (op.organization?.name || '').toLowerCase().replace(/\s/g, ''),
+    location: op.location || (op.is_remote ? 'Remote' : 'On-site'),
+    type: typeLabels[op.opportunity_type] || op.opportunity_type,
+    mode: op.is_remote ? 'Remote' : 'Onsite',
+    salaryMin: 0, salaryMax: 0,
+    compensationLabel: op.compensation || (op.is_paid ? 'Paid' : 'Unpaid'),
+    deadline: op.application_deadline
+      ? new Date(op.application_deadline).toLocaleDateString('en-GB', { day: 'numeric', month: 'short', year: 'numeric' })
+      : 'Open',
+    saved: false,
+  };
+}
 
 export default function JobsPage() {
   const navigate = useNavigate();
   const [query, setQuery] = useState('');
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [activeFilter, setActiveFilter] = useState('All');
   const [showFilters, setShowFilters] = useState(false);
   const [filterType, setFilterType] = useState([]);
-  const [filterMode, setFilterMode] = useState([]);
 
-  const allCategories = ['All', ...categories.map(c => c.label)];
-  const jobTypes = ['Full Time', 'Part Time', 'Internship', 'Contract'];
-  const modes = ['Remote', 'Onsite', 'Hybrid'];
+  // Build params for the API
+  const params = {
+    ...(query ? { search: query } : {}),
+    ...(filterType.length === 1 ? { opportunity_type: filterType[0] } : {}),
+    ...(activeFilter === 'Remote' ? { is_remote: true } : {}),
+    ...(activeFilter === 'Paid' ? { is_paid: true } : {}),
+    ...(activeFilter === 'Internship' ? { opportunity_type: 'internship' } : {}),
+    ...(activeFilter === 'Micro Project' ? { opportunity_type: 'micro_project' } : {}),
+    ...(activeFilter === 'Guided Project' ? { opportunity_type: 'guided_project' } : {}),
+  };
 
-  const filtered = jobs.filter(j => {
-    const matchesQuery = j.title.toLowerCase().includes(query.toLowerCase()) ||
-      j.company.toLowerCase().includes(query.toLowerCase());
-    const matchesCat = activeCategory === 'All' || j.category === activeCategory;
-    const matchesType = filterType.length === 0 || filterType.includes(j.type);
-    const matchesMode = filterMode.length === 0 || filterMode.includes(j.mode);
-    return matchesQuery && matchesCat && matchesType && matchesMode;
-  });
+  const { data: rawJobs, loading, error } = useApi(() => getOpportunities(params), [query, activeFilter, filterType.join(',')]);
+  const jobs = (rawJobs || []).map(adaptJob);
 
-  const toggleFilter = (arr, setArr, val) =>
-    setArr(a => a.includes(val) ? a.filter(x => x !== val) : [...a, val]);
+  const toggleType = (t) => setFilterType(f => f.includes(t) ? f.filter(x => x !== t) : [...f, t]);
 
   return (
     <div className="p-8 max-w-4xl">
-      <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>All Jobs</h1>
+      <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>All Opportunities</h1>
 
-      {/* Search + Filter */}
-      <div className="flex gap-2 mb-6">
+      {/* Search + Filter toggle */}
+      <div className="flex gap-2 mb-4">
         <div className="flex-1 relative">
           <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2" style={{ color: 'var(--text-muted)' }} />
           <input
-            placeholder="Search jobs..."
+            placeholder="Search opportunities..."
             value={query}
             onChange={e => setQuery(e.target.value)}
             className="w-full pl-11 pr-4 py-3 rounded-full text-sm border"
@@ -46,11 +68,8 @@ export default function JobsPage() {
         </div>
         <button
           onClick={() => setShowFilters(s => !s)}
-          className="w-12 h-12 rounded-full flex items-center justify-center border"
-          style={{
-            background: showFilters ? 'var(--text-primary)' : 'white',
-            borderColor: 'var(--border)',
-          }}
+          className="w-12 h-12 rounded-full flex items-center justify-center border transition-all"
+          style={{ background: showFilters ? 'var(--text-primary)' : 'white', borderColor: 'var(--border)' }}
         >
           <SlidersHorizontal size={18} color={showFilters ? '#fff' : 'var(--text-secondary)'} />
         </button>
@@ -58,38 +77,18 @@ export default function JobsPage() {
 
       {/* Filter panel */}
       {showFilters && (
-        <div className="bg-white rounded-2xl p-5 mb-6 border" style={{ borderColor: 'var(--border)' }}>
-          <p className="font-semibold text-sm mb-3" style={{ color: 'var(--text-primary)' }}>Job Type</p>
-          <div className="flex flex-wrap gap-2 mb-4">
-            {jobTypes.map(t => (
-              <button
-                key={t}
-                onClick={() => toggleFilter(filterType, setFilterType, t)}
-                className="px-3 py-1.5 rounded-full text-xs border"
+        <div className="bg-white rounded-2xl p-5 mb-5 border" style={{ borderColor: 'var(--border)' }}>
+          <p className="font-semibold text-sm mb-3" style={{ color: 'var(--text-primary)' }}>Opportunity Type</p>
+          <div className="flex flex-wrap gap-2">
+            {opportunityTypes.map(t => (
+              <button key={t} onClick={() => toggleType(t)}
+                className="px-3 py-1.5 rounded-full text-xs border capitalize"
                 style={{
                   background: filterType.includes(t) ? 'var(--text-primary)' : 'transparent',
                   color: filterType.includes(t) ? '#fff' : 'var(--text-secondary)',
                   borderColor: 'var(--border)',
-                }}
-              >
-                {t}
-              </button>
-            ))}
-          </div>
-          <p className="font-semibold text-sm mb-3" style={{ color: 'var(--text-primary)' }}>Work Mode</p>
-          <div className="flex flex-wrap gap-2">
-            {modes.map(m => (
-              <button
-                key={m}
-                onClick={() => toggleFilter(filterMode, setFilterMode, m)}
-                className="px-3 py-1.5 rounded-full text-xs border"
-                style={{
-                  background: filterMode.includes(m) ? 'var(--text-primary)' : 'transparent',
-                  color: filterMode.includes(m) ? '#fff' : 'var(--text-secondary)',
-                  borderColor: 'var(--border)',
-                }}
-              >
-                {m}
+                }}>
+                {typeLabels[t]}
               </button>
             ))}
           </div>
@@ -99,29 +98,30 @@ export default function JobsPage() {
       {/* Category tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
         {allCategories.map(cat => (
-          <button
-            key={cat}
-            onClick={() => setActiveCategory(cat)}
+          <button key={cat} onClick={() => setActiveFilter(cat)}
             className="px-4 py-2 rounded-full text-sm whitespace-nowrap border transition-all"
             style={{
-              background: activeCategory === cat ? 'var(--text-primary)' : 'white',
-              color: activeCategory === cat ? '#fff' : 'var(--text-primary)',
-              borderColor: activeCategory === cat ? 'var(--text-primary)' : 'var(--border)',
-            }}
-          >
+              background: activeFilter === cat ? 'var(--text-primary)' : 'white',
+              color: activeFilter === cat ? '#fff' : 'var(--text-primary)',
+              borderColor: activeFilter === cat ? 'var(--text-primary)' : 'var(--border)',
+            }}>
             {cat}
           </button>
         ))}
       </div>
 
-      {/* Results */}
-      <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{filtered.length} jobs found</p>
-      <div className="flex flex-col gap-4">
-        {filtered.map(job => <JobCardWide key={job.id} job={job} />)}
-        {filtered.length === 0 && (
-          <p className="text-center py-10" style={{ color: 'var(--text-muted)' }}>No jobs match your search.</p>
-        )}
-      </div>
+      {loading && <p className="text-sm py-10 text-center" style={{ color: 'var(--text-muted)' }}>Loading…</p>}
+      {error && <p className="text-sm py-10 text-center" style={{ color: 'var(--red)' }}>{error}</p>}
+
+      {!loading && !error && (
+        <>
+          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{jobs.length} opportunities found</p>
+          <div className="flex flex-col gap-4">
+            {jobs.map(job => <JobCardWide key={job.id} job={job} />)}
+            {jobs.length === 0 && <p className="text-center py-10" style={{ color: 'var(--text-muted)' }}>No opportunities match your search.</p>}
+          </div>
+        </>
+      )}
     </div>
   );
 }

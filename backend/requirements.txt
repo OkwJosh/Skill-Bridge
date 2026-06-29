@@ -1,0 +1,56 @@
+# =============================================================================
+# SkillBridge - Production Dependencies
+# =============================================================================
+# Django Backend for Multi-Sided Opportunity Marketplace
+# Database: Supabase PostgreSQL | Storage: Supabase S3 | Auth: Simple JWT
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Core Django Framework
+# -----------------------------------------------------------------------------
+Django>=5.0,<6.0
+djangorestframework>=3.14,<4.0
+djangorestframework-simplejwt>=5.3,<6.0  # JWT authentication for DRF
+
+# -----------------------------------------------------------------------------
+# Database - Supabase PostgreSQL
+# -----------------------------------------------------------------------------
+psycopg2-binary>=2.9,<3.0      # PostgreSQL adapter
+dj-database-url>=2.1,<3.0       # Parse SUPABASE_DB_URL connection string
+
+# -----------------------------------------------------------------------------
+# Authentication - Simple JWT Token Generation & Verification
+# -----------------------------------------------------------------------------
+PyJWT>=2.8,<3.0                 # Encode & decode JWT tokens
+cryptography>=42.0,<43.0        # Required for JWT algorithms
+
+# -----------------------------------------------------------------------------
+# Storage - Supabase S3-Compatible Storage
+# -----------------------------------------------------------------------------
+django-storages>=1.14,<2.0      # Custom storage backends for Django
+boto3>=1.34,<2.0                # AWS SDK for S3-compatible API
+
+# -----------------------------------------------------------------------------
+# API & Security
+# -----------------------------------------------------------------------------
+django-cors-headers>=4.3,<5.0   # CORS handling for frontend requests
+django-filter>=24.0,<25.0       # Filtering for DRF querysets
+drf-spectacular>=0.27,<1.0      # OpenAPI 3.0 schema generation
+requests>=2.31,<3.0             # HTTP client for Supabase Auth API calls
+
+# -----------------------------------------------------------------------------
+# Environment & Configuration
+# -----------------------------------------------------------------------------
+python-dotenv>=1.0,<2.0         # Load .env files for local development
+
+# -----------------------------------------------------------------------------
+# Production Server
+# -----------------------------------------------------------------------------
+gunicorn>=22.0,<23.0            # Production WSGI HTTP Server
+whitenoise>=6.6,<7.0            # Efficient static file serving
+
+# -----------------------------------------------------------------------------
+# AI Engine (used by ai_script/process_cv_supabase.py via ai_engine app)
+# -----------------------------------------------------------------------------
+supabase>=2.5,<3.0              # Supabase Python client
+google-genai>=0.3,<1.0          # Gemini SDK
