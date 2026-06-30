@@ -352,3 +352,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # EMAIL CONFIGURATION
 # =============================================================================
 EMAIL_BACKEND = os.getenv('EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
+
+# Allow all origins for CORS
+CORS_ALLOW_ALL_ORIGINS = True
