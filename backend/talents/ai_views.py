@@ -12,7 +12,7 @@ def get_gemini_model():
     if not api_key:
         return None
     genai.configure(api_key=api_key)
-    return genai.GenerativeModel('gemini-1.5-flash')
+    return genai.GenerativeModel('gemini-2.5-flash')
 
 class GenerateBioView(APIView):
     permission_classes = [IsAuthenticated]

@@ -20,7 +20,7 @@ class GenerateDescriptionView(APIView):
         genai.configure(api_key=api_key)
         
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             full_prompt = (
                 f'Act as a professional technical recruiter. '
                 f'Generate a highly professional, engaging job description for an internship or project opportunity '
@@ -56,7 +56,7 @@ class ScreenApplicationView(APIView):
         talent_bio = application.talent.bio
         
         try:
-            model = genai.GenerativeModel('gemini-1.5-flash')
+            model = genai.GenerativeModel('gemini-2.5-flash')
             prompt = (
                 f'Act as a technical recruiter. Screen the following candidate against the job description.\n'
                 f'Job Description:\n{opp_desc}\n\n'
