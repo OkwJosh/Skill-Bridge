@@ -84,10 +84,12 @@ export default function AppLayout() {
     navigate('/sign-in');
   };
 
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+
   return (
     <div className="flex min-h-screen" style={{ background: 'var(--bg)' }}>
-      <aside className="w-56 flex flex-col justify-between py-6 px-4 shrink-0" style={{ background: 'var(--bg)' }}>
-        {/* Logo */}
+      {/* Desktop Sidebar */}
+      <aside className="hidden md:flex w-56 flex-col justify-between py-6 px-4 shrink-0 border-r" style={{ background: 'var(--bg)', borderColor: 'var(--border)' }}>
         <div>
           <div className="flex items-center gap-2 px-3 mb-8">
             <img src="/logos/logo.svg" alt="SkillBridge Logo" className="w-8 h-8 object-contain" />
@@ -128,7 +130,6 @@ export default function AppLayout() {
           </nav>
         </div>
 
-        {/* User + Logout */}
         <div>
           <button onClick={() => navigate('/app/profile')}
             className="flex items-center gap-2 px-3 py-2 mb-1 w-full rounded-xl hover:bg-black/5 transition-colors text-left">
@@ -151,10 +152,89 @@ export default function AppLayout() {
         </div>
       </aside>
 
-      <main className="flex-1 overflow-y-auto">
+      {/* Main Content */}
+      <main className="flex-1 w-full overflow-y-auto pb-20 md:pb-0 relative">
         {user && user.email_verified === false && <EmailVerificationBanner />}
+        
+        {/* Mobile Header (replaces standard HomePage header branding on mobile if needed, but we keep it simple here) */}
+        <div className="md:hidden flex items-center justify-between px-5 py-4 border-b bg-white/80 backdrop-blur-md sticky top-0 z-30" style={{ borderColor: 'var(--border)' }}>
+          <div className="flex items-center gap-2">
+            <img src="/logos/logo.svg" alt="SkillBridge Logo" className="w-7 h-7 object-contain" />
+            <span className="font-semibold text-lg" style={{ color: 'var(--text-primary)' }}>SkillBridge</span>
+          </div>
+          <button onClick={() => setMobileMenuOpen(true)}>
+            <img src="/icons/nav_alerts.svg" alt="Menu" style={{ width: 22, height: 22, filter: 'brightness(0)' }} />
+            {/* Using a simple menu icon fallback if needed, or we can just use the avatar */}
+            <Avatar name={user?.full_name || 'User'} size={32} imageUrl={user?.avatar_url} />
+          </button>
+        </div>
+
         <Outlet />
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="md:hidden fixed bottom-0 w-full bg-white border-t z-40 flex justify-around items-center px-2 py-2 pb-safe" style={{ borderColor: 'var(--border)' }}>
+        {navItems.slice(0, 4).map(({ to, icon: Icon, label }) => {
+          const isNotifications = to === '/app/notifications';
+          return (
+            <NavLink key={to} to={to}
+              className="flex flex-col items-center justify-center w-full py-1 gap-1 relative"
+              style={({ isActive }) => ({ color: isActive ? 'var(--text-primary)' : 'var(--text-muted)' })}>
+              {({ isActive }) => (
+                <>
+                  {typeof Icon === 'string' ? (
+                    <img src={Icon} alt={label} style={{ width: 22, height: 22, filter: isActive ? 'brightness(0)' : 'brightness(0) opacity(0.4)' }} />
+                  ) : (
+                    <Icon size={22} color={isActive ? 'var(--text-primary)' : 'var(--text-muted)'} />
+                  )}
+                  <span className="text-[10px] font-medium truncate w-full text-center">{label}</span>
+                  {isNotifications && unread > 0 && (
+                    <span className="absolute top-0 right-1/4 translate-x-2 -translate-y-1 w-2.5 h-2.5 bg-red-500 rounded-full border-2 border-white" />
+                  )}
+                </>
+              )}
+            </NavLink>
+          );
+        })}
+        {/* Mobile Menu Toggle Button */}
+        <button onClick={() => setMobileMenuOpen(true)} className="flex flex-col items-center justify-center w-full py-1 gap-1 text-gray-400 hover:text-black">
+          <Settings size={22} />
+          <span className="text-[10px] font-medium truncate w-full text-center">More</span>
+        </button>
+      </nav>
+
+      {/* Mobile Drawer (More Items) */}
+      {mobileMenuOpen && (
+        <div className="md:hidden fixed inset-0 z-50 flex justify-end">
+          <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileMenuOpen(false)} />
+          <div className="w-64 bg-white h-full shadow-2xl relative flex flex-col pt-12 pb-6 px-4 animate-slide-in-right">
+            <button onClick={() => setMobileMenuOpen(false)} className="absolute top-4 right-4 p-2 text-gray-400 hover:text-black">
+              <LogOut size={20} className="rotate-180" />
+            </button>
+            <div className="mb-8 px-2 flex items-center gap-3">
+              <Avatar name={user?.full_name || 'User'} size={44} imageUrl={user?.avatar_url} />
+              <div className="min-w-0">
+                <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{user?.full_name}</p>
+                <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{user?.roles?.[0]}</p>
+              </div>
+            </div>
+            <div className="flex-1 overflow-y-auto flex flex-col gap-2">
+              {navItems.map(({ to, icon: Icon, label }) => (
+                <NavLink key={to} to={to} onClick={() => setMobileMenuOpen(false)}
+                  className={({ isActive }) => `flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium transition-all ${isActive ? 'bg-gray-100 text-black' : 'text-gray-500'}`}>
+                  {typeof Icon === 'string' ? <img src={Icon} style={{ width: 18, height: 18 }} /> : <Icon size={18} />}
+                  {label}
+                </NavLink>
+              ))}
+            </div>
+            <div className="pt-4 mt-4 border-t" style={{ borderColor: 'var(--border)' }}>
+              <button onClick={handleLogout} className="flex items-center gap-3 px-4 py-3 rounded-2xl text-sm font-medium w-full hover:bg-red-50 text-red-500">
+                <LogOut size={18} /> Logout
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

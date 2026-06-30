@@ -66,7 +66,7 @@ export default function SearchPage() {
   const results = rawResults || [];
 
   return (
-    <div className="p-8 max-w-3xl">
+    <div className="p-4 md:p-8 max-w-3xl w-full mx-auto">
       <h1 className="text-2xl font-bold mb-4" style={{ color: 'var(--text-primary)' }}>
         {searchTalents ? 'Find Talent' : 'Find Opportunities'}
       </h1>

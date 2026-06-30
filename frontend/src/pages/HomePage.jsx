@@ -19,7 +19,7 @@ export default function HomePage() {
   const isSchoolAdmin = user?.is_school_admin;
 
   return (
-    <div className="p-8 max-w-5xl">
+    <div className="p-4 md:p-8 max-w-5xl w-full mx-auto">
       <Header user={user} />
       {isTalent     && <TalentHome />}
       {isMentor     && <MentorHome />}
@@ -149,7 +149,7 @@ function TalentHome() {
         <>
           <div className="mb-8">
             <SectionHeader title="Recent Opportunities" onSeeAll={() => navigate('/app/jobs')} />
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
               {loading 
                 ? Array.from({ length: 4 }).map((_, i) => <JobCardSmallSkeleton key={i} />)
                 : recentJobs.map(job => <JobCardSmall key={job.id} job={job} />)}
@@ -197,7 +197,7 @@ function MentorHome() {
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-3 gap-4 mb-8">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
         <StatCard label="Active mentees" value={activeCount} />
         <StatCard label="Max mentees" value={profile?.max_mentees ?? '—'} />
         <StatCard label="Endorsements given" value={profile?.endorsements_given ?? 0} />

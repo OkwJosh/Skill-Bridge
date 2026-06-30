@@ -50,11 +50,11 @@ export function JobCardSmall({ job }) {
       style={{ borderColor: 'var(--border)' }}
     >
       <div className="flex justify-between items-start mb-3">
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 min-w-0 flex-1 pr-2">
           <CompanyLogo companyKey={job.companyKey} size={36} />
-          <div>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{job.company}</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>📍 {job.location}</p>
+          <div className="min-w-0">
+            <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{job.company}</p>
+            <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>📍 {job.location}</p>
           </div>
         </div>
         <button
@@ -64,9 +64,9 @@ export function JobCardSmall({ job }) {
           <Heart size={16} fill={saved ? '#EF4444' : 'none'} color={saved ? '#EF4444' : '#9CA3AF'} />
         </button>
       </div>
-      <p className="font-semibold text-sm mb-1" style={{ color: 'var(--text-primary)' }}>{job.title}</p>
-      <p className="text-xs mb-3" style={{ color: 'var(--text-muted)' }}>{job.type} · {job.mode}</p>
-      <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{displayPay(job)}</p>
+      <p className="font-semibold text-sm mb-1 truncate" style={{ color: 'var(--text-primary)' }}>{job.title}</p>
+      <p className="text-xs mb-3 truncate" style={{ color: 'var(--text-muted)' }}>{job.type} · {job.mode}</p>
+      <p className="text-sm font-semibold truncate" style={{ color: 'var(--text-primary)' }}>{displayPay(job)}</p>
     </div>
   );
 }
@@ -82,11 +82,11 @@ export function JobCardWide({ job }) {
       style={{ borderColor: 'var(--border)' }}
     >
       <div className="flex justify-between items-start">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-3 min-w-0 flex-1 pr-2">
           <CompanyLogo companyKey={job.companyKey} size={44} />
-          <div>
-            <p className="font-semibold text-sm" style={{ color: 'var(--text-primary)' }}>{job.title}</p>
-            <p className="text-xs" style={{ color: 'var(--text-muted)' }}>{job.company}</p>
+          <div className="min-w-0">
+            <p className="font-semibold text-sm truncate" style={{ color: 'var(--text-primary)' }}>{job.title}</p>
+            <p className="text-xs truncate" style={{ color: 'var(--text-muted)' }}>{job.company}</p>
           </div>
         </div>
         <button
@@ -272,7 +272,7 @@ export function AuthShell({ children, imageSide = true }) {
           </div>
         )}
         {/* Right form panel */}
-        <div className="flex-1 bg-white flex flex-col p-10 justify-center">
+        <div className="flex-1 bg-white flex flex-col p-6 sm:p-10 justify-center">
           <div className="flex items-center gap-2 mb-8">
             <LogoMarkSmall />
             <span className="font-semibold" style={{ color: 'var(--text-primary)' }}>SkillBridge</span>

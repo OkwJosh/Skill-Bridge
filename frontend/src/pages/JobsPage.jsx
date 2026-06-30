@@ -53,7 +53,7 @@ export default function JobsPage() {
   const toggleType = (t) => setFilterType(f => f.includes(t) ? f.filter(x => x !== t) : [...f, t]);
 
   return (
-    <div className="p-8 max-w-4xl">
+    <div className="p-4 md:p-8 max-w-4xl w-full mx-auto">
       <h1 className="text-2xl font-bold mb-6" style={{ color: 'var(--text-primary)' }}>All Opportunities</h1>
 
       {/* Search + Filter toggle */}
