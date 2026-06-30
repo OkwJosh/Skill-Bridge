@@ -52,7 +52,7 @@ class ScreenApplicationView(APIView):
         genai.configure(api_key=api_key)
         
         opp_desc = application.opportunity.description
-        talent_skills = ', '.join([s.name for s in application.talent.skills.all()])
+        talent_skills = ', '.join([s.skill.name for s in application.talent.skills.all()])
         talent_bio = application.talent.bio
         
         try:

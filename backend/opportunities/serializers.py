@@ -52,6 +52,7 @@ class OpportunitySerializer(serializers.ModelSerializer):
     # Computed fields
     application_count = serializers.SerializerMethodField()
     is_saved = serializers.SerializerMethodField()
+    has_applied = serializers.SerializerMethodField()
     
     class Meta:
         model = Opportunity
@@ -80,13 +81,14 @@ class OpportunitySerializer(serializers.ModelSerializer):
             'start_date',
             'application_count',
             'is_saved',
+            'has_applied',
             'created_at',
             'updated_at',
             'published_at',
         ]
         read_only_fields = [
             'id', 'slug', 'organization', 'mentor', 'poster_name',
-            'application_count', 'is_saved', 'created_at', 'updated_at', 'published_at'
+            'application_count', 'is_saved', 'has_applied', 'created_at', 'updated_at', 'published_at'
         ]
     
     def get_application_count(self, obj):
@@ -99,6 +101,15 @@ class OpportunitySerializer(serializers.ModelSerializer):
             if annotated is not None:
                 return annotated
             return SavedOpportunity.objects.filter(user=request.user, opportunity=obj).exists()
+        return False
+
+    def get_has_applied(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated and hasattr(request.user, 'talent_profile'):
+            annotated = getattr(obj, 'has_applied_by_user', None)
+            if annotated is not None:
+                return annotated
+            return Application.objects.filter(talent=request.user.talent_profile, opportunity=obj).exists()
         return False
 
 
@@ -219,6 +230,7 @@ class OpportunityListSerializer(serializers.ModelSerializer):
     # a direct count for un-annotated callers.
     application_count = serializers.SerializerMethodField()
     is_saved = serializers.SerializerMethodField()
+    has_applied = serializers.SerializerMethodField()
 
     class Meta:
         model = Opportunity
@@ -242,6 +254,7 @@ class OpportunityListSerializer(serializers.ModelSerializer):
             'application_deadline',
             'application_count',
             'is_saved',
+            'has_applied',
             'created_at',
         ]
 
@@ -256,6 +269,15 @@ class OpportunityListSerializer(serializers.ModelSerializer):
             if annotated is not None:
                 return annotated
             return SavedOpportunity.objects.filter(user=request.user, opportunity=obj).exists()
+        return False
+
+    def get_has_applied(self, obj):
+        request = self.context.get('request')
+        if request and request.user.is_authenticated and hasattr(request.user, 'talent_profile'):
+            annotated = getattr(obj, 'has_applied_by_user', None)
+            if annotated is not None:
+                return annotated
+            return Application.objects.filter(talent=request.user.talent_profile, opportunity=obj).exists()
         return False
 
 
