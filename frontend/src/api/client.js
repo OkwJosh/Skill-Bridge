@@ -2,7 +2,7 @@
 // All requests go through here. Handles auth headers, token refresh,
 // and the standard { status, data, errors } envelope from the backend.
 
-const BASE_URL = 'http://localhost:8000/api/v1';
+const BASE_URL = 'https://skill-bridge-8thk.onrender.com/api/v1';
 
 // Pull token from localStorage (set by AuthContext on login)
 const getToken = () => localStorage.getItem('access_token');
