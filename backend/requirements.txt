@@ -11,3 +11,4 @@ drf-spectacular==0.29.0
 supabase==2.30.0
 Faker
 django-storages==1.14.6
+whitenoise
