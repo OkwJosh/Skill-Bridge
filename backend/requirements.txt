@@ -13,3 +13,4 @@ Faker
 django-storages==1.14.6
 whitenoise
 gunicorn
+boto3
