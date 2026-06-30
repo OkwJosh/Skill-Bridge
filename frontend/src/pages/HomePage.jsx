@@ -9,7 +9,8 @@ import { listTalents } from '../api/talents';
 import { getMyOrganization } from '../api/organizations';
 import { listMyMentorships, getMyMentorProfile } from '../api/mentors';
 import { getProactiveSourcing } from '../api/ai';
-import { JobCardSmall, JobCardWide, SectionHeader, Avatar } from '../components/UI';
+import { JobCardSmall, JobCardWide, SectionHeader, Avatar, JobCardSmallSkeleton, JobCardWideSkeleton } from '../components/UI';
+import { categories as staticCategories } from '../data';
 
 
 // ─── Role router ────────────────────────────────────────────────────────────
@@ -96,11 +97,12 @@ function TalentHome() {
   const recentJobs = jobs.slice(0, 4);
   const recommendedJobs = jobs.slice(0, 6);
 
-  const categories = useMemo(() => {
-    const set = new Set(jobs.map(j => j.category).filter(Boolean));
-    return Array.from(set).map(label => ({ id: label, label }));
-  }, [jobs]);
+  const categories = staticCategories;
   const [activeCategory, setActiveCategory] = useState(null);
+
+  const filteredRecommended = activeCategory
+    ? recommendedJobs.filter(j => j.category === activeCategory)
+    : recommendedJobs;
 
   return (
     <>
@@ -127,35 +129,44 @@ function TalentHome() {
           <SectionHeader title="Categories" onSeeAll={() => navigate('/app/jobs')} />
           <div className="flex flex-wrap gap-2">
             {categories.map(cat => (
-              <button key={cat.id} onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+              <button key={cat.id} onClick={() => setActiveCategory(activeCategory === cat.label ? null : cat.label)}
                 className="px-4 py-2 rounded-full text-sm border transition-all"
                 style={{
-                  background: activeCategory === cat.id ? 'var(--text-primary)' : 'white',
-                  color: activeCategory === cat.id ? '#fff' : 'var(--text-primary)',
-                  borderColor: activeCategory === cat.id ? 'var(--text-primary)' : 'var(--border)',
+                  background: activeCategory === cat.label ? 'var(--text-primary)' : 'white',
+                  color: activeCategory === cat.label ? '#fff' : 'var(--text-primary)',
+                  borderColor: activeCategory === cat.label ? 'var(--text-primary)' : 'var(--border)',
                 }}>
-                {cat.label}
+                {cat.icon} {cat.label}
               </button>
             ))}
           </div>
         </div>
       )}
 
-      {loading && <p className="text-sm py-8 text-center" style={{ color: 'var(--text-muted)' }}>Loading…</p>}
       {error && <p className="text-sm py-8 text-center" style={{ color: 'var(--red)' }}>{error}</p>}
 
-      {!loading && !error && (
+      {!error && (
         <>
           <div className="mb-8">
             <SectionHeader title="Recent Opportunities" onSeeAll={() => navigate('/app/jobs')} />
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
-              {recentJobs.map(job => <JobCardSmall key={job.id} job={job} />)}
+              {loading 
+                ? Array.from({ length: 4 }).map((_, i) => <JobCardSmallSkeleton key={i} />)
+                : recentJobs.map(job => <JobCardSmall key={job.id} job={job} />)}
             </div>
           </div>
           <div>
             <SectionHeader title="Recommended" onSeeAll={() => navigate('/app/jobs')} />
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {recommendedJobs.map(job => <JobCardWide key={job.id} job={job} />)}
+              {loading 
+                ? Array.from({ length: 6 }).map((_, i) => <JobCardWideSkeleton key={i} />)
+                : filteredRecommended.map(job => <JobCardWide key={job.id} job={job} />)}
+              
+              {!loading && filteredRecommended.length === 0 && (
+                <p className="col-span-full py-8 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
+                  No opportunities found in this category.
+                </p>
+              )}
             </div>
           </div>
         </>

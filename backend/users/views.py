@@ -95,6 +95,40 @@ class SignUpView(APIView):
             user.is_school_admin = True
         user.save()
 
+        # Handle organization creation if role is org_admin and organization data is provided
+        organization_data = serializer.validated_data.get('organization')
+        if role == 'org_admin' and organization_data:
+            from organizations.serializers import OrganizationUpdateSerializer
+            from organizations.models import Organization, OrganizationMember
+            from django.utils.text import slugify
+            
+            org_serializer = OrganizationUpdateSerializer(data=organization_data)
+            org_serializer.is_valid(raise_exception=True)
+            
+            name = org_serializer.validated_data.get('name', '').strip()
+            if name:
+                base_slug = slugify(name)[:200] or 'org'
+                slug = base_slug
+                n = 2
+                while Organization.objects.filter(slug=slug).exists():
+                    slug = f'{base_slug}-{n}'
+                    n += 1
+                
+                industry_id = org_serializer.validated_data.pop('industry_id', None)
+                org = Organization.objects.create(slug=slug, **org_serializer.validated_data)
+                
+                if industry_id:
+                    from core.models import CanonicalIndustry
+                    ind = CanonicalIndustry.objects.filter(pk=industry_id, is_active=True).first()
+                    if ind:
+                        org.industry = ind
+                        org.save(update_fields=['industry'])
+                        
+                OrganizationMember.objects.create(
+                    organization=org, user=user,
+                    role=OrganizationMember.MemberRole.OWNER,
+                )
+
         # Fire-and-forget OTP email so the app can show the "Enter OTP" screen.
         # We don't block signup on email-server outages — the user can resend.
         try:

@@ -1,5 +1,6 @@
+import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useAuth } from './context/AuthContext';
+import { useAuth, AuthProvider } from './context/AuthContext';
 
 import SplashPage from './pages/SplashPage';
 import OnboardingPage from './pages/OnboardingPage';
@@ -42,63 +43,90 @@ function ProtectedRoute({ children }) {
   const { isLoggedIn, loading } = useAuth();
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: 'var(--bg)' }}>
-      <p style={{ color: 'var(--text-muted)' }}>Loading…</p>
+      <Lottie animationData={loadingAnimation} loop={true} style={{ width: 120, height: 120 }} />
     </div>
   );
   return isLoggedIn ? children : <Navigate to="/sign-in" replace />;
 }
 
+class ErrorBoundary extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { hasError: false, error: null };
+  }
+  static getDerivedStateFromError(error) {
+    return { hasError: true, error };
+  }
+  componentDidCatch(error, errorInfo) {
+    console.error("ErrorBoundary caught an error", error, errorInfo);
+  }
+  render() {
+    if (this.state.hasError) {
+      return (
+        <div style={{ padding: '2rem', color: 'red' }}>
+          <h2>Something went wrong.</h2>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{this.state.error?.toString()}</pre>
+          <pre style={{ whiteSpace: 'pre-wrap' }}>{this.state.error?.stack}</pre>
+        </div>
+      );
+    }
+    return this.props.children; 
+  }
+}
+
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<SplashPage />} />
-        <Route path="/onboarding" element={<OnboardingPage />} />
-        <Route path="/create-account" element={<CreateAccountPage />} />
-        <Route path="/sign-in" element={<SignInPage />} />
-        <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password" element={<ResetPasswordPage />} />
-        <Route path="/verify-email" element={<VerifyEmailPage />} />
-        <Route path="/choose-role" element={<ChooseRolePage />} />
-        <Route path="/create-organization" element={<ProtectedRoute><CreateOrganizationPage /></ProtectedRoute>} />
-        <Route path="/create-school" element={<ProtectedRoute><CreateSchoolPage /></ProtectedRoute>} />
-        <Route path="/about-you" element={<AboutYouPage />} />
-        <Route path="/add-skills" element={<AddSkillsPage />} />
-        <Route path="/account-success" element={<SuccessPage />} />
+    <ErrorBoundary>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<SplashPage />} />
+          <Route path="/onboarding" element={<OnboardingPage />} />
+          <Route path="/create-account" element={<CreateAccountPage />} />
+          <Route path="/sign-in" element={<SignInPage />} />
+          <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+          <Route path="/reset-password" element={<ResetPasswordPage />} />
+          <Route path="/verify-email" element={<VerifyEmailPage />} />
+          <Route path="/choose-role" element={<ChooseRolePage />} />
+          <Route path="/create-organization" element={<ProtectedRoute><CreateOrganizationPage /></ProtectedRoute>} />
+          <Route path="/create-school" element={<ProtectedRoute><CreateSchoolPage /></ProtectedRoute>} />
+          <Route path="/about-you" element={<AboutYouPage />} />
+          <Route path="/add-skills" element={<AddSkillsPage />} />
+          <Route path="/account-success" element={<SuccessPage />} />
 
-        <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
-          <Route index element={<Navigate to="/app/home" replace />} />
-          <Route path="home" element={<HomePage />} />
-          <Route path="search" element={<SearchPage />} />
-          <Route path="jobs" element={<JobsPage />} />
-          <Route path="jobs/:id" element={<JobDetailsPage />} />
-          <Route path="jobs/:id/apply" element={<ApplyPage />} />
-          <Route path="jobs/:id/apply/success" element={<ApplicationSuccessPage />} />
-          <Route path="my-applications" element={<MyApplicationsPage />} />
-          <Route path="my-mentors" element={<MyMentorsPage />} />
-          <Route path="talent" element={<TalentPage />} />
-          <Route path="talent/:id" element={<TalentProfilePage />} />
-          <Route path="notifications" element={<NotificationsPage />} />
-          <Route path="settings" element={<SettingsPage />} />
-          <Route path="profile" element={<ProfilePage />} />
+          <Route path="/app" element={<ProtectedRoute><AppLayout /></ProtectedRoute>}>
+            <Route index element={<Navigate to="/app/home" replace />} />
+            <Route path="home" element={<HomePage />} />
+            <Route path="search" element={<SearchPage />} />
+            <Route path="jobs" element={<JobsPage />} />
+            <Route path="jobs/:id" element={<JobDetailsPage />} />
+            <Route path="jobs/:id/apply" element={<ApplyPage />} />
+            <Route path="jobs/:id/apply/success" element={<ApplicationSuccessPage />} />
+            <Route path="my-applications" element={<MyApplicationsPage />} />
+            <Route path="my-mentors" element={<MyMentorsPage />} />
+            <Route path="talent" element={<TalentPage />} />
+            <Route path="talent/:id" element={<TalentProfilePage />} />
+            <Route path="notifications" element={<NotificationsPage />} />
+            <Route path="settings" element={<SettingsPage />} />
+            <Route path="profile" element={<ProfilePage />} />
 
-          {/* Mentor surfaces */}
-          <Route path="mentor/mentorships" element={<MentorMentorshipsPage />} />
-          <Route path="mentor/mentorships/:id" element={<MentorMentorshipDetailPage />} />
-          <Route path="mentor/post-project" element={<MentorPostProjectPage />} />
+            {/* Mentor surfaces */}
+            <Route path="mentor/mentorships" element={<MentorMentorshipsPage />} />
+            <Route path="mentor/mentorships/:id" element={<MentorMentorshipDetailPage />} />
+            <Route path="mentor/post-project" element={<MentorPostProjectPage />} />
 
-          {/* Organization surfaces */}
-          <Route path="org/profile" element={<OrgProfilePage />} />
-          <Route path="org/opportunities" element={<OrgOpportunitiesPage />} />
-          <Route path="org/opportunities/:id" element={<OrgOpportunityDetailPage />} />
+            {/* Organization surfaces */}
+            <Route path="org/profile" element={<OrgProfilePage />} />
+            <Route path="org/opportunities" element={<OrgOpportunitiesPage />} />
+            <Route path="org/opportunities/:id" element={<OrgOpportunityDetailPage />} />
 
-          {/* School surfaces */}
-          <Route path="school" element={<SchoolDashboardPage />} />
-          <Route path="school/roster" element={<SchoolRosterPage />} />
-        </Route>
+            {/* School surfaces */}
+            <Route path="school" element={<SchoolDashboardPage />} />
+            <Route path="school/roster" element={<SchoolRosterPage />} />
+          </Route>
 
-        <Route path="*" element={<Navigate to="/" replace />} />
-      </Routes>
-    </BrowserRouter>
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </BrowserRouter>
+    </ErrorBoundary>
   );
 }

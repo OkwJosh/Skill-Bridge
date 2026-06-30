@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
 import { getOpportunity, applyToOpportunity } from '../api/opportunities';
+import { generateCoverLetter } from '../api/talents';
 import { uploadToSupabase } from '../api/uploads';
 import { Button, PageHeader, CompanyLogo } from '../components/UI';
 import { Upload } from 'lucide-react';
@@ -21,6 +22,26 @@ export default function ApplyPage() {
   const [resumeUploading, setResumeUploading] = useState(false);
   const [resumeError, setResumeError] = useState('');
   const resumeFileRef = useRef(null);
+  
+  const [draftingCoverLetter, setDraftingCoverLetter] = useState(false);
+  
+  const handleDraftCoverLetter = async () => {
+    if (!id) return;
+    setDraftingCoverLetter(true);
+    setError('');
+    try {
+      const res = await generateCoverLetter(id);
+      if (res?.data?.cover_letter) {
+        setCoverLetter(res.data.cover_letter);
+      } else {
+        setError('Unexpected response from AI.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setDraftingCoverLetter(false);
+    }
+  };
 
   const handleResumePick = async (e) => {
     const file = e.target.files?.[0];
@@ -115,9 +136,14 @@ export default function ApplyPage() {
 
       {/* Cover Letter */}
       <div className="mb-5">
-        <p className="text-sm font-medium mb-2" style={{ color: 'var(--text-primary)' }}>
-          Cover Letter <span style={{ color: 'var(--text-muted)' }}>(optional)</span>
-        </p>
+        <div className="flex justify-between items-center mb-2">
+          <p className="text-sm font-medium" style={{ color: 'var(--text-primary)' }}>
+            Cover Letter <span style={{ color: 'var(--text-muted)' }}>(optional)</span>
+          </p>
+          <button onClick={handleDraftCoverLetter} disabled={draftingCoverLetter} className="text-xs font-semibold flex items-center gap-1 disabled:opacity-50" style={{ color: 'var(--text-primary)' }}>
+            <img src="/icons/star.svg" className="w-3 h-3" alt="AI" /> {draftingCoverLetter ? 'Drafting...' : 'Draft with AI'}
+          </button>
+        </div>
         <textarea
           placeholder="Tell the employer why you're the right fit for this role..."
           value={coverLetter}

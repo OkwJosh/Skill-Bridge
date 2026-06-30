@@ -16,6 +16,8 @@ from .views import (
     SavedOpportunityToggleView,
     SavedOpportunityListView,
     ApplicationInterviewCreateView,
+    GenerateDescriptionView,
+    ScreenApplicationView,
 )
 
 app_name = 'opportunities'
@@ -28,6 +30,9 @@ urlpatterns = [
     
     # GET /api/v1/opportunities/saved/ - List saved opportunities
     path('saved/', SavedOpportunityListView.as_view(), name='saved-list'),
+
+    # POST /api/v1/opportunities/generate-description/ - AI Generate Job Description
+    path('generate-description/', GenerateDescriptionView.as_view(), name='generate-description'),
 
     # GET  /api/v1/opportunities/<pk>/ - Get opportunity details (public)
     # PATCH /api/v1/opportunities/<pk>/ - Update opportunity (owner only)
@@ -46,6 +51,9 @@ urlpatterns = [
     
     # PATCH /api/v1/opportunities/applications/<pk>/status/ - Update application status
     path('applications/<int:pk>/status/', ApplicationStatusUpdateView.as_view(), name='application-status'),
+    
+    # GET /api/v1/opportunities/applications/<pk>/ai-screen/ - AI Screen candidate
+    path('applications/<int:pk>/ai-screen/', ScreenApplicationView.as_view(), name='application-ai-screen'),
     
     # POST /api/v1/opportunities/applications/<pk>/interviews/ - Schedule interview
     path('applications/<int:pk>/interviews/', ApplicationInterviewCreateView.as_view(), name='application-interviews'),

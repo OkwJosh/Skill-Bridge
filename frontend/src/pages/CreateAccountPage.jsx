@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthShell, Button, Input } from '../components/UI';
 import OAuthButtons from '../components/OAuthButtons';
-import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 // User picks role explicitly on signup. No silent default.
@@ -93,7 +92,7 @@ export default function CreateAccountPage() {
                  onChange={e => setPassword(e.target.value)}
                  rightIcon={
                    <button type="button" onClick={() => setShowPass(s => !s)}>
-                     {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                     {showPass ? <img src="/icons/show_password.svg" className="w-4 h-4 opacity-50" /> : <img src="/icons/show_password.svg" className="w-4 h-4" />}
                    </button>
                  } />
         </div>

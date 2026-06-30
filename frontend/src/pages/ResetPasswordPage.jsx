@@ -56,7 +56,7 @@ export default function ResetPasswordPage() {
                      onChange={e => setPassword(e.target.value)}
                      rightIcon={
                        <button onClick={() => setShowPass(s => !s)}>
-                         {showPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                         {showPass ? <img src="/icons/show_password.svg" className="w-4 h-4 opacity-50" /> : <img src="/icons/show_password.svg" className="w-4 h-4" />}
                        </button>
                      } />
               <Input placeholder="Confirm new password"

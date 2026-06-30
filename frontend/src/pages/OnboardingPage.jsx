@@ -28,9 +28,7 @@ export default function OnboardingPage() {
         className="w-64 h-64 rounded-3xl flex items-center justify-center"
         style={{ background: '#E5E4E0' }}
       >
-        <svg width="80" height="80" viewBox="0 0 40 40" fill="none">
-          <path d="M20 6C12 6 6 11 6 18C6 23 10 27 15 28L20 35L25 28C30 27 34 23 34 18C34 11 28 6 20 6Z" fill="#1A1A1A" opacity="0.3"/>
-        </svg>
+        <img src="/logos/logo.svg" className="w-20 h-20 opacity-30 object-contain" alt="SkillBridge Logo" />
       </div>
 
       {/* Text */}

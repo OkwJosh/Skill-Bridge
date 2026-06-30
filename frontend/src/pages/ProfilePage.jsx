@@ -6,7 +6,7 @@ import { useApi } from '../hooks/useApi';
 import { useAIInsight } from '../hooks/useAIInsight';
 import {
   getMyTalentProfile, updateMyTalentProfile,
-  addSkill, removeSkill,
+  addSkill, removeSkill, generateBio,
 } from '../api/talents';
 import { getSkills, createSkill } from '../api/core';
 import {
@@ -324,6 +324,7 @@ export default function ProfilePage() {
   const [error, setError] = useState('');
   const [avatarUploading, setAvatarUploading] = useState(false);
   const [avatarError, setAvatarError] = useState('');
+  const [showAiBioModal, setShowAiBioModal] = useState(false);
   const avatarFileRef = useRef(null);
 
   const handleAvatarPick = async (e) => {
@@ -408,10 +409,9 @@ export default function ProfilePage() {
                  className="w-20 h-20 rounded-full object-cover"
                  style={{ background: '#D1D5DB' }} />
           ) : (
-            <div className="w-20 h-20 rounded-full flex items-center justify-center text-2xl font-semibold"
-                 style={{ background: '#D1D5DB', color: '#374151' }}>
-              {initials}
-            </div>
+            <img src="/icons/male_image_fallback.png" alt={user?.full_name || 'avatar'}
+                 className="w-20 h-20 rounded-full object-cover"
+                 style={{ background: '#D1D5DB' }} />
           )}
           <input ref={avatarFileRef} type="file" accept="image/png,image/jpeg,image/webp"
                  className="hidden" onChange={handleAvatarPick} />
@@ -459,7 +459,19 @@ export default function ProfilePage() {
             <p className="text-sm font-semibold mb-4" style={{ color: 'var(--text-primary)' }}>Professional</p>
             <Field label="Headline" value={headline} onChange={setHeadline}
                    placeholder="e.g. Full-stack developer · React + Django" />
-            <Field label="Bio" value={bio} onChange={setBio} multiline />
+            
+            <div className="mb-3">
+              <div className="flex justify-between items-center mb-1">
+                <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Bio</p>
+                <button onClick={() => setShowAiBioModal(true)} className="text-xs font-semibold flex items-center gap-1" style={{ color: 'var(--text-primary)' }}>
+                  <img src="/icons/star.svg" className="w-3 h-3" alt="AI" /> Generate with AI
+                </button>
+              </div>
+              <textarea value={bio || ''} onChange={e => setBio(e.target.value)}
+                        rows={3} placeholder="Tell us about yourself..."
+                        className="w-full px-3 py-2 text-sm border rounded-lg resize-y"
+                        style={{ borderColor: 'var(--border)' }} />
+            </div>
             <div className="mt-2 flex items-center gap-2">
               <input type="checkbox" id="avail" checked={isAvailable} onChange={e => setIsAvailable(e.target.checked)} />
               <label htmlFor="avail" className="text-sm" style={{ color: 'var(--text-primary)' }}>
@@ -505,10 +517,79 @@ export default function ProfilePage() {
           {saving ? 'Saving…' : 'Save Changes'}
         </Button>
       </div>
+
+      {showAiBioModal && (
+        <AiBioModal onClose={() => setShowAiBioModal(false)} onAccept={(text) => { setBio(text); setShowAiBioModal(false); }} />
+      )}
     </div>
   );
 }
 
+function AiBioModal({ onClose, onAccept }) {
+  const [prompt, setPrompt] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [result, setResult] = useState('');
+  const [error, setError] = useState('');
+
+  const handleGenerate = async () => {
+    if (!prompt.trim()) return;
+    setGenerating(true);
+    setError('');
+    try {
+      const res = await generateBio(prompt);
+      if (res?.data?.bio) {
+        setResult(res.data.bio);
+      } else {
+        setError('Unexpected response from AI.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-2xl w-full max-w-md p-6 relative">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <X size={20} />
+        </button>
+        <h3 className="text-lg font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <img src="/icons/star.svg" className="w-4 h-4" alt="AI" /> AI Bio Generator
+        </h3>
+        <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
+          Enter a few bullet points about your experience and skills, and let AI write a professional bio for you.
+        </p>
+        
+        {!result ? (
+          <>
+            <textarea value={prompt} onChange={e => setPrompt(e.target.value)}
+                      placeholder="- 3 years of frontend experience&#10;- React, Vue, Tailwind&#10;- Looking for frontend roles"
+                      rows={4} className="w-full px-3 py-2 text-sm border rounded-lg resize-y mb-4"
+                      style={{ borderColor: 'var(--border)' }} />
+            {error && <p className="text-xs text-red-500 mb-2">{error}</p>}
+            <Button onClick={handleGenerate} disabled={generating || !prompt.trim()}>
+              {generating ? 'Generating...' : 'Generate Bio'}
+            </Button>
+          </>
+        ) : (
+          <>
+            <textarea value={result} onChange={e => setResult(e.target.value)}
+                      rows={5} className="w-full px-3 py-2 text-sm border rounded-lg resize-y mb-4"
+                      style={{ borderColor: 'var(--border)' }} />
+            <div className="flex gap-2">
+              <Button onClick={() => onAccept(result)} className="flex-1">Use this Bio</Button>
+              <button onClick={() => setResult('')} className="flex-1 text-sm font-semibold border rounded-xl" style={{ borderColor: 'var(--border)' }}>
+                Try Again
+              </button>
+            </div>
+          </>
+        )}
+      </div>
+    </div>
+  );
+}
 
 // ── Field primitive ─────────────────────────────────────────────────────────
 function Field({ label, value, onChange, type = 'text', placeholder, disabled, multiline }) {

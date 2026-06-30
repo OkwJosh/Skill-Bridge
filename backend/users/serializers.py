@@ -142,6 +142,7 @@ class SignUpSerializer(serializers.Serializer):
         default='talent',
         required=False
     )
+    organization = serializers.DictField(required=False)
     
     def validate_email(self, value):
         """Check if email is already registered in Django."""

@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { getOpportunities } from '../api/opportunities';
-import { JobCardWide } from '../components/UI';
+import { JobCardWide, JobCardWideSkeleton } from '../components/UI';
+import { categories as staticCategories } from '../data';
 
 const opportunityTypes = ['internship', 'micro_project', 'guided_project'];
 const typeLabels = { internship: 'Internship', micro_project: 'Micro Project', guided_project: 'Guided Project' };
-const allCategories = ['All', 'Remote', 'Paid', 'Internship', 'Micro Project', 'Guided Project'];
+const categoryTabs = [{ id: 'All', label: 'All Categories' }, ...staticCategories];
 
 function adaptJob(op) {
   return {
@@ -47,6 +48,7 @@ export default function JobsPage() {
 
   const { data: rawJobs, loading, error } = useApi(() => getOpportunities(params), [query, activeFilter, filterType.join(',')]);
   const jobs = (rawJobs || []).map(adaptJob);
+  const displayJobs = activeFilter === 'All' ? jobs : jobs.filter(j => j.category === activeFilter);
 
   const toggleType = (t) => setFilterType(f => f.includes(t) ? f.filter(x => x !== t) : [...f, t]);
 
@@ -97,28 +99,38 @@ export default function JobsPage() {
 
       {/* Category tabs */}
       <div className="flex gap-2 overflow-x-auto pb-2 mb-6">
-        {allCategories.map(cat => (
-          <button key={cat} onClick={() => setActiveFilter(cat)}
-            className="px-4 py-2 rounded-full text-sm whitespace-nowrap border transition-all"
-            style={{
-              background: activeFilter === cat ? 'var(--text-primary)' : 'white',
-              color: activeFilter === cat ? '#fff' : 'var(--text-primary)',
-              borderColor: activeFilter === cat ? 'var(--text-primary)' : 'var(--border)',
-            }}>
-            {cat}
-          </button>
-        ))}
+        {categoryTabs.map(cat => {
+          const catLabel = cat.label === 'All Categories' ? 'All' : cat.label;
+          return (
+            <button key={cat.id} onClick={() => setActiveFilter(catLabel)}
+              className="px-4 py-2 rounded-full text-sm whitespace-nowrap border transition-all"
+              style={{
+                background: activeFilter === catLabel ? 'var(--text-primary)' : 'white',
+                color: activeFilter === catLabel ? '#fff' : 'var(--text-primary)',
+                borderColor: activeFilter === catLabel ? 'var(--text-primary)' : 'var(--border)',
+              }}>
+              {cat.icon && <span className="mr-2">{cat.icon}</span>}
+              {cat.label}
+            </button>
+          );
+        })}
       </div>
 
-      {loading && <p className="text-sm py-10 text-center" style={{ color: 'var(--text-muted)' }}>Loading…</p>}
       {error && <p className="text-sm py-10 text-center" style={{ color: 'var(--red)' }}>{error}</p>}
 
-      {!loading && !error && (
+      {!error && (
         <>
-          <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{jobs.length} opportunities found</p>
+          {!loading && <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>{displayJobs.length} opportunities found</p>}
           <div className="flex flex-col gap-4">
-            {jobs.map(job => <JobCardWide key={job.id} job={job} />)}
-            {jobs.length === 0 && <p className="text-center py-10" style={{ color: 'var(--text-muted)' }}>No opportunities match your search.</p>}
+            {loading 
+              ? Array.from({ length: 5 }).map((_, i) => <JobCardWideSkeleton key={i} />)
+              : displayJobs.map(job => <JobCardWide key={job.id} job={job} />)
+            }
+            {!loading && displayJobs.length === 0 && (
+              <p className="text-center py-10" style={{ color: 'var(--text-muted)' }}>
+                No opportunities match your search.
+              </p>
+            )}
           </div>
         </>
       )}

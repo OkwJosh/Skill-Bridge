@@ -687,3 +687,5 @@ class ApplicationInterviewCreateView(APIView):
             "meta": {"message": "Interview scheduled successfully."},
             "errors": []
         }, status=status.HTTP_201_CREATED)
+
+from .ai_views import GenerateDescriptionView, ScreenApplicationView

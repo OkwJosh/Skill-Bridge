@@ -15,7 +15,7 @@ import { useApi } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
 import { getOpportunities } from '../api/opportunities';
 import { listTalents } from '../api/talents';
-import { JobCardWide, Avatar } from '../components/UI';
+import { JobCardWide, Avatar, JobCardWideSkeleton, TalentResultCardSkeleton } from '../components/UI';
 
 const TALENT_SUGGESTIONS = ['Python', 'React', 'Data Analysis', 'Figma', 'Django', 'DevOps'];
 const OPPORTUNITY_SUGGESTIONS = ['Software Engineer', 'Data Analyst', 'Product Designer',
@@ -112,7 +112,6 @@ export default function SearchPage() {
       {/* Results */}
       {submitted && (
         <div>
-          {loading && <p className="text-sm py-6 text-center" style={{ color: 'var(--text-muted)' }}>Searching…</p>}
           {!loading && (
             <>
               <p className="text-sm mb-4" style={{ color: 'var(--text-muted)' }}>
@@ -124,17 +123,21 @@ export default function SearchPage() {
                   No results found. Try a different search.
                 </p>
               )}
-
-              {searchTalents ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {results.map(t => <TalentResultCard key={t.id} talent={t} />)}
-                </div>
-              ) : (
-                <div className="flex flex-col gap-4">
-                  {results.map(job => <JobCardWide key={job.id} job={adaptJob(job)} />)}
-                </div>
-              )}
             </>
+          )}
+
+          {searchTalents ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {loading
+                ? Array.from({ length: 6 }).map((_, i) => <TalentResultCardSkeleton key={i} />)
+                : results.map(t => <TalentResultCard key={t.id} talent={t} />)}
+            </div>
+          ) : (
+            <div className="flex flex-col gap-4">
+              {loading
+                ? Array.from({ length: 5 }).map((_, i) => <JobCardWideSkeleton key={i} />)
+                : results.map(job => <JobCardWide key={job.id} job={adaptJob(job)} />)}
+            </div>
           )}
         </div>
       )}

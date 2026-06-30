@@ -21,6 +21,12 @@ from mentors.mentorship_views import (
     TalentMentorshipListView,
     TalentSessionListView,
 )
+from .ai_views import (
+    GenerateBioView,
+    GenerateCoverLetterView,
+    GenerateInterviewPrepView,
+    GenerateResumeSummaryView,
+)
 
 app_name = 'talents'
 
@@ -34,6 +40,12 @@ urlpatterns = [
     path('me/skills/', TalentSkillManageView.as_view(), name='skills-add'),
     path('me/skills/<int:skill_id>/', TalentSkillManageView.as_view(), name='skills-manage'),
     path('me/skills/<int:skill_id>/update/', TalentSkillUpdateView.as_view(), name='skills-update'),
+
+    # ── Talent AI Features ──────────────────────────────────────────────────
+    path('me/ai/bio/', GenerateBioView.as_view(), name='ai-bio'),
+    path('me/ai/cover-letter/', GenerateCoverLetterView.as_view(), name='ai-cover-letter'),
+    path('me/ai/interview-prep/', GenerateInterviewPrepView.as_view(), name='ai-interview-prep'),
+    path('me/ai/resume/', GenerateResumeSummaryView.as_view(), name='ai-resume'),
 
     # ── Mentorships (talent side, read-only) ────────────────────────────────
     path('me/mentorships/',

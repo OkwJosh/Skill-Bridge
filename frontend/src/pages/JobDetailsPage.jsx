@@ -4,7 +4,9 @@ import { Share2, Users, Clock, MapPin, Bookmark } from 'lucide-react';
 import { useApi } from '../hooks/useApi';
 import { useAuth } from '../context/AuthContext';
 import { getOpportunity } from '../api/opportunities';
+import { generateInterviewPrep } from '../api/talents';
 import { CompanyLogo, Button, PageHeader } from '../components/UI';
+import { X } from 'lucide-react';
 
 const tabs = ['Overview', 'Requirements', 'About'];
 
@@ -20,6 +22,7 @@ export default function JobDetailsPage() {
   const { isTalent } = useAuth();
   const [activeTab, setActiveTab] = useState(0);
   const [saved, setSaved] = useState(false);
+  const [showAiCoach, setShowAiCoach] = useState(false);
 
   const { data: op, loading, error } = useApi(() => getOpportunity(id), [id]);
 
@@ -163,14 +166,79 @@ export default function JobDetailsPage() {
                 Applications are open to talents only.
               </p>
             )}
-            <Button variant="secondary" onClick={() => setSaved(s => !s)}>
+            <Button variant="secondary" onClick={() => setSaved(s => !s)} className="mb-3">
               <span className="flex items-center justify-center gap-2">
                 <Bookmark size={16} fill={saved ? 'currentColor' : 'none'} />
                 {saved ? 'Saved' : 'Save'}
               </span>
             </Button>
+            {isTalent && (
+              <Button variant="secondary" onClick={() => setShowAiCoach(true)}>
+                <span className="flex items-center justify-center gap-2">
+                  <img src="/icons/star.svg" className="w-4 h-4" alt="AI" /> AI Interview Prep
+                </span>
+              </Button>
+            )}
           </div>
         </div>
+      </div>
+      
+      {showAiCoach && (
+        <AiCoachModal opportunityId={id} onClose={() => setShowAiCoach(false)} />
+      )}
+    </div>
+  );
+}
+
+function AiCoachModal({ opportunityId, onClose }) {
+  const [prep, setPrep] = useState('');
+  const [generating, setGenerating] = useState(false);
+  const [error, setError] = useState('');
+
+  const handleGenerate = async () => {
+    setGenerating(true);
+    setError('');
+    try {
+      const res = await generateInterviewPrep(opportunityId);
+      if (res?.data?.interview_prep) {
+        setPrep(res.data.interview_prep);
+      } else {
+        setError('Unexpected response from AI.');
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setGenerating(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+      <div className="bg-white rounded-2xl w-full max-w-2xl p-6 relative max-h-[80vh] flex flex-col">
+        <button onClick={onClose} className="absolute top-4 right-4 text-gray-400 hover:text-gray-600">
+          <X size={20} />
+        </button>
+        <h3 className="text-lg font-semibold mb-2 flex items-center gap-2" style={{ color: 'var(--text-primary)' }}>
+          <img src="/icons/star.svg" className="w-4 h-4" alt="AI" /> AI Interview Coach
+        </h3>
+        <p className="text-sm mb-4 shrink-0" style={{ color: 'var(--text-muted)' }}>
+          Get likely interview questions and answering tips tailored to this opportunity.
+        </p>
+        
+        {!prep ? (
+          <div className="text-center py-8">
+            {error && <p className="text-xs text-red-500 mb-4">{error}</p>}
+            <Button onClick={handleGenerate} disabled={generating}>
+              {generating ? 'Generating Prep...' : 'Generate Interview Prep'}
+            </Button>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-y-auto pr-2">
+            <div className="whitespace-pre-line text-sm" style={{ color: 'var(--text-secondary)' }}>
+              {prep}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

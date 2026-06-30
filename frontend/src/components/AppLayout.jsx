@@ -14,14 +14,14 @@ import { resendVerificationEmail } from '../api/auth';
 //   Org Admin   : Home · Organization · My Opportunities · Talents · Search · Notifications · Settings
 //   School Admin: Home · School · Roster · Notifications · Settings
 function buildNavItems({ isTalent, isMentor, isOrgAdmin, isSchoolAdmin }) {
-  const items = [{ to: '/app/home', icon: Home, label: 'Home' }];
+  const items = [{ to: '/app/home', icon: '/icons/nav_home.svg', label: 'Home' }];
 
   if (isTalent) {
-    items.push({ to: '/app/jobs',            icon: Briefcase, label: 'Opportunities' });
+    items.push({ to: '/app/jobs',            icon: '/icons/opportunities.svg', label: 'Opportunities' });
     items.push({ to: '/app/my-applications', icon: FileText,  label: 'My Applications' });
   }
   if (isMentor) {
-    items.push({ to: '/app/mentor/mentorships', icon: Calendar, label: 'My Mentorships' });
+    items.push({ to: '/app/mentor/mentorships', icon: '/icons/calender.svg', label: 'My Mentorships' });
   }
   if (isOrgAdmin) {
     items.push({ to: '/app/org/profile',       icon: Building2,     label: 'Organization' });
@@ -32,23 +32,27 @@ function buildNavItems({ isTalent, isMentor, isOrgAdmin, isSchoolAdmin }) {
     items.push({ to: '/app/school/roster', icon: FileText,      label: 'Roster' });
   }
   if (isMentor || isOrgAdmin) {
-    items.push({ to: '/app/talent', icon: Users, label: 'Talents' });
+    items.push({ to: '/app/talent', icon: '/icons/talent.svg', label: 'Talents' });
   }
   if (!isSchoolAdmin) {
-    items.push({ to: '/app/search', icon: Search, label: 'Search' });
+    items.push({ to: '/app/search', icon: '/icons/search_icon.svg', label: 'Search' });
   }
-  items.push({ to: '/app/notifications', icon: Bell,     label: 'Notifications' });
-  items.push({ to: '/app/settings',      icon: Settings, label: 'Settings' });
+  items.push({ to: '/app/notifications', icon: '/icons/nav_alerts.svg', label: 'Notifications' });
+  items.push({ to: '/app/settings',      icon: '/icons/settings.svg', label: 'Settings' });
   return items;
 }
 
-export function Avatar({ name, size = 40, className = '' }) {
-  const initials = name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+export function Avatar({ name, size = 40, className = '', imageUrl = null }) {
+  if (imageUrl) {
+    return (
+      <img src={imageUrl} alt={name} className={`rounded-full object-cover shrink-0 ${className}`} 
+           style={{ width: size, height: size }} />
+    );
+  }
+  // Fallback if no specific image is provided
   return (
-    <div className={`rounded-full flex items-center justify-center shrink-0 font-medium ${className}`}
-      style={{ width: size, height: size, background: '#D1D5DB', color: '#374151', fontSize: size * 0.35 }}>
-      {initials}
-    </div>
+    <img src="/icons/male_image_fallback.png" alt={name || 'User'} className={`rounded-full object-cover shrink-0 ${className}`} 
+         style={{ width: size, height: size, background: '#D1D5DB' }} />
   );
 }
 
@@ -86,10 +90,7 @@ export default function AppLayout() {
         {/* Logo */}
         <div>
           <div className="flex items-center gap-2 px-3 mb-8">
-            <svg width="24" height="24" viewBox="0 0 40 40" fill="none">
-              <path d="M20 8C14 8 8 12 8 18C8 22 11 25 15 26L20 32L25 26C29 25 32 22 32 18C32 12 26 8 20 8Z" fill="#1A1A1A"/>
-              <path d="M14 20C14 20 17 24 20 24C23 24 26 20 26 20" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-            </svg>
+            <img src="/logos/logo.svg" alt="SkillBridge Logo" className="w-8 h-8 object-contain" />
             <span className="font-semibold text-base" style={{ color: 'var(--text-primary)' }}>SkillBridge</span>
           </div>
 
@@ -105,13 +106,21 @@ export default function AppLayout() {
                     ? { background: 'var(--text-primary)', color: '#fff' }
                     : { color: 'var(--text-secondary)' }
                   }>
-                  <Icon size={18} />
-                  <span className="flex-1">{label}</span>
-                  {isNotifications && unread > 0 && (
-                    <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white"
-                          style={{ background: 'var(--red)' }}>
-                      {unread > 99 ? '99+' : unread}
-                    </span>
+                  {({ isActive }) => (
+                    <>
+                      {typeof Icon === 'string' ? (
+                        <img src={Icon} alt={label} style={{ width: 18, height: 18, filter: isActive ? 'brightness(0) invert(1)' : 'none' }} />
+                      ) : (
+                        <Icon size={18} />
+                      )}
+                      <span className="flex-1">{label}</span>
+                      {isNotifications && unread > 0 && (
+                        <span className="text-[10px] font-semibold px-1.5 py-0.5 rounded-full text-white"
+                              style={{ background: 'var(--red)' }}>
+                          {unread > 99 ? '99+' : unread}
+                        </span>
+                      )}
+                    </>
                   )}
                 </NavLink>
               );
@@ -123,7 +132,7 @@ export default function AppLayout() {
         <div>
           <button onClick={() => navigate('/app/profile')}
             className="flex items-center gap-2 px-3 py-2 mb-1 w-full rounded-xl hover:bg-black/5 transition-colors text-left">
-            <Avatar name={user?.full_name || 'User'} size={32} />
+            <Avatar name={user?.full_name || 'User'} size={32} imageUrl={user?.avatar_url} />
             <div className="min-w-0">
               <p className="text-sm font-medium truncate" style={{ color: 'var(--text-primary)' }}>
                 {user?.full_name || 'User'}

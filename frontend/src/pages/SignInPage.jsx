@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AuthShell, Button, Input } from '../components/UI';
 import OAuthButtons from '../components/OAuthButtons';
-import { Eye, EyeOff } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 
 export default function SignInPage() {
@@ -46,7 +45,7 @@ export default function SignInPage() {
             type={showPass ? 'text' : 'password'}
             value={password}
             onChange={e => setPassword(e.target.value)}
-            rightIcon={<button onClick={() => setShowPass(s => !s)}>{showPass ? <EyeOff size={16} /> : <Eye size={16} />}</button>}
+            rightIcon={<button onClick={() => setShowPass(s => !s)}>{showPass ? <img src="/icons/show_password.svg" className="w-4 h-4 opacity-50" /> : <img src="/icons/show_password.svg" className="w-4 h-4" />}</button>}
           />
         </div>
 

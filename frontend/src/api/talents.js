@@ -45,3 +45,28 @@ export const updateSkill = (skillId, data) =>
 // DELETE /talents/me/skills/<skill_id>/
 export const removeSkill = (skillId) =>
   apiRequest(`/talents/me/skills/${skillId}/`, { method: 'DELETE' });
+
+// ─── AI Features ────────────────────────────────────────────────────────────
+
+export const generateBio = (prompt) =>
+  apiRequest('/talents/me/ai/bio/', {
+    method: 'POST',
+    body: JSON.stringify({ prompt }),
+  });
+
+export const generateCoverLetter = (opportunityId) =>
+  apiRequest('/talents/me/ai/cover-letter/', {
+    method: 'POST',
+    body: JSON.stringify({ opportunity_id: opportunityId }),
+  });
+
+export const generateInterviewPrep = (opportunityId) =>
+  apiRequest('/talents/me/ai/interview-prep/', {
+    method: 'POST',
+    body: JSON.stringify({ opportunity_id: opportunityId }),
+  });
+
+export const generateResumeSummary = () =>
+  apiRequest('/talents/me/ai/resume/', {
+    method: 'POST',
+  });

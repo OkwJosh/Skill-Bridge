@@ -12,8 +12,23 @@ const logoColors = {
 };
 
 export function CompanyLogo({ companyKey, size = 40 }) {
+  const [error, setError] = useState(false);
   const color = logoColors[companyKey] || '#6B7280';
   const letter = companyKey?.[0]?.toUpperCase() || '?';
+
+  if (!error && companyKey) {
+    const domain = `${companyKey}.com`;
+    return (
+      <img
+        src={`https://logo.clearbit.com/${domain}?size=${size * 2}`}
+        alt={companyKey}
+        onError={() => setError(true)}
+        className="rounded-xl object-contain shrink-0"
+        style={{ width: size, height: size, background: '#fff', border: '1px solid var(--border)' }}
+      />
+    );
+  }
+
   return (
     <div
       className="rounded-xl flex items-center justify-center font-bold text-white shrink-0"
@@ -89,6 +104,72 @@ export function JobCardWide({ job }) {
       <div className="flex justify-between items-center mt-3">
         <p className="text-xs" style={{ color: 'var(--text-muted)' }}>Deadline: {job.deadline}</p>
         <p className="text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{displayPay(job)}</p>
+      </div>
+    </div>
+  );
+}
+
+// ─── Skeletons ───────────────────────────────────────────────────
+export function JobCardSmallSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl p-4 border animate-pulse" style={{ borderColor: 'var(--border)' }}>
+      <div className="flex justify-between items-start mb-3">
+        <div className="flex items-center gap-2">
+          <div className="rounded-xl bg-gray-200" style={{ width: 36, height: 36 }} />
+          <div>
+            <div className="h-3 w-16 bg-gray-200 rounded mb-1" />
+            <div className="h-3 w-20 bg-gray-200 rounded" />
+          </div>
+        </div>
+        <div className="w-6 h-6 rounded-full bg-gray-200" />
+      </div>
+      <div className="h-4 w-32 bg-gray-200 rounded mb-2" />
+      <div className="h-3 w-24 bg-gray-200 rounded mb-3" />
+      <div className="h-4 w-20 bg-gray-200 rounded" />
+    </div>
+  );
+}
+
+export function JobCardWideSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl p-4 border animate-pulse" style={{ borderColor: 'var(--border)' }}>
+      <div className="flex justify-between items-start">
+        <div className="flex items-center gap-3">
+          <div className="rounded-xl bg-gray-200" style={{ width: 44, height: 44 }} />
+          <div>
+            <div className="h-4 w-32 bg-gray-200 rounded mb-1" />
+            <div className="h-3 w-24 bg-gray-200 rounded" />
+          </div>
+        </div>
+        <div className="w-6 h-6 rounded-full bg-gray-200" />
+      </div>
+      <div className="flex flex-wrap gap-2 mt-3">
+        <div className="h-6 w-16 bg-gray-200 rounded-full" />
+        <div className="h-6 w-20 bg-gray-200 rounded-full" />
+      </div>
+      <div className="flex justify-between items-center mt-3">
+        <div className="h-3 w-32 bg-gray-200 rounded" />
+        <div className="h-4 w-24 bg-gray-200 rounded" />
+      </div>
+    </div>
+  );
+}
+
+export function TalentResultCardSkeleton() {
+  return (
+    <div className="bg-white rounded-2xl p-4 border animate-pulse" style={{ borderColor: 'var(--border)' }}>
+      <div className="flex items-start gap-3 mb-2">
+        <div className="rounded-full bg-gray-200" style={{ width: 42, height: 42 }} />
+        <div className="min-w-0 flex-1 py-1">
+          <div className="h-4 w-32 bg-gray-200 rounded mb-1.5" />
+          <div className="h-3 w-48 bg-gray-200 rounded" />
+        </div>
+        <div className="h-5 w-12 bg-gray-200 rounded-full" />
+      </div>
+      <div className="flex flex-wrap gap-1 mt-3">
+        <div className="h-5 w-16 bg-gray-200 rounded-full" />
+        <div className="h-5 w-20 bg-gray-200 rounded-full" />
+        <div className="h-5 w-14 bg-gray-200 rounded-full" />
       </div>
     </div>
   );
@@ -180,7 +261,7 @@ export function AuthShell({ children, imageSide = true }) {
           <div
             className="hidden md:block w-1/2 relative"
             style={{
-              background: 'linear-gradient(135deg, #9CA3AF 0%, #6B7280 100%)',
+              background: 'url(/images/auth_bg.png) center/cover no-repeat',
             }}
           >
             <div className="absolute inset-0 flex items-end p-8">
@@ -204,11 +285,7 @@ export function AuthShell({ children, imageSide = true }) {
 }
 
 function LogoMarkSmall() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 40 40" fill="none">
-      <path d="M20 8C14 8 8 12 8 18C8 22 11 25 15 26L20 32L25 26C29 25 32 22 32 18C32 12 26 8 20 8Z" fill="#1A1A1A"/>
-    </svg>
-  );
+  return <img src="/logos/logo.svg" className="w-5 h-5 object-contain" alt="SkillBridge" />;
 }
 
 // ─── Page Header (with back button) ──────────────────────────────
@@ -237,7 +314,7 @@ export function PageHeader({ title, onBack, rightSlot }) {
 
 // ─── Avatar ──────────────────────────────────────────────────────
 export function Avatar({ name, size = 40, className = '' }) {
-  const initials = name?.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() || '?';
+  const initials = (name || '?').split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
   return (
     <div
       className={`rounded-full flex items-center justify-center shrink-0 font-medium ${className}`}
