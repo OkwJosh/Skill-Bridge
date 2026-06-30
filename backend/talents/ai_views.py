@@ -60,7 +60,7 @@ class GenerateCoverLetterView(APIView):
         if not model:
             return Response({'message': 'AI integration is not configured'}, status=500)
             
-        talent_skills = ', '.join([s.name for s in talent.skills.all()])
+        talent_skills = ', '.join([s.skill.name for s in talent.skills.all()])
         
         try:
             full_prompt = (
@@ -123,7 +123,7 @@ class GenerateResumeSummaryView(APIView):
         if not model:
             return Response({'message': 'AI integration is not configured'}, status=500)
             
-        talent_skills = ', '.join([s.name for s in talent.skills.all()])
+        talent_skills = ', '.join([s.skill.name for s in talent.skills.all()])
         
         try:
             full_prompt = (
